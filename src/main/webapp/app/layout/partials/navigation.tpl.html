@@ -1,0 +1,99 @@
+<aside id="left-panel">
+
+    <!-- User info -->
+    <div login-info></div>
+    <!-- end user info -->
+
+    <nav>
+        <!-- NOTE: Notice the gaps after each icon usage <i></i>..
+        Please note that these links work a bit different than
+        traditional href="" links. See documentation for details.
+        -->
+
+        <ul data-smart-menu>
+
+            <li data-ui-sref-active="active">
+                <a data-ui-sref="app.home" title="{{getWord('Home')}}">
+                    <i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">{{getWord('Home')}}</span></a>
+            </li>
+
+            <li data-ui-sref-active="active" ng-click="vm.login()" ng-show="!vm.isAuthenticated()">
+                <a data-ui-sref="app.home" title="Войти">
+                    <i class="fa fa-lg fa-fw fa-sign-in"></i> <span class="menu-item-parent">Войти</span></a>
+            </li>
+
+            <li data-menu-collapse class="top-menu-invisible" ng-show="vm.isAuthenticated()" has-authority="ROLE_ADMIN">
+                <a href="#"><i class="fa fa-lg fa-fw fa-user-md txt-color-blue"></i> <span class="menu-item-parent">Администратор</span></a>
+                <ul>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="user-management"><i class="glyphicon glyphicon-user"></i>
+                            Пользователи</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="jhi-tracker"><i class="glyphicon glyphicon-eye-open"></i>
+                            Активность</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="jhi-metrics"><i class="glyphicon glyphicon-dashboard"></i>
+                            JVM Метрики</a>
+                    </li>
+                    <!--<li data-ui-sref-active="active">
+                        <a data-ui-sref="jhi-health"><i class="glyphicon glyphicon-heart"></i>
+                            {{getWord('Health')}}</a>
+                    </li>-->
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="jhi-configuration"><i class="glyphicon glyphicon-list-alt"></i>
+                            Параметры</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="audits"><i class="glyphicon glyphicon-bell"></i>
+                            Аудит</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="logs"><i class="glyphicon glyphicon-tasks"></i>
+                            Журнал</a>
+                    </li>
+                    <li data-ui-sref-active="active" ng-hide="vm.inProduction">
+                        <a data-ui-sref="docs"><i class="glyphicon glyphicon-book"></i>
+                            Документация</a>
+                    </li>
+                </ul>
+            </li>
+
+            <li data-menu-collapse class="top-menu-invisible" ng-show="vm.isAuthenticated()" has-authority="ROLE_USER">
+                <a href="#"><i class="fa fa-lg fa-fw fa-user txt-color-green"></i> <span class="menu-item-parent">{{getWord('Profile')}}</span></a>
+                <ul>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="settings"><i class="glyphicon glyphicon-wrench"></i>
+                            Настройки</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="password"><i class="glyphicon glyphicon-lock"></i>
+                            Пароль</a>
+                    </li>
+                    <!--<li data-ui-sref-active="active">
+                        <a data-ui-sref="sessions"><i class="glyphicon glyphicon-cloud"></i>
+                            Сессии</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="register"><i class="glyphicon glyphicon-edit"></i>
+                            Регистрация</a>
+                    </li>-->
+                    <li data-ui-sref-active="active" ng-click="vm.logout()">
+                        <a data-ui-sref="app.home" title="Выход">
+                            <i class="fa fa-lg fa-fw fa-sign-out"></i> <span class="menu-item-parent">Выход</span></a>
+                    </li>
+                </ul>
+            </li>
+
+        </ul>
+
+        <!-- NOTE: This allows you to pull menu items from server -->
+        <!-- <ul data-smart-menu-items="/api/menu-items.json"></ul> -->
+    </nav>
+
+  <span class="minifyme" data-action="minifyMenu" minify-menu>
+    <i class="fa fa-arrow-circle-left hit"></i>
+  </span>
+
+</aside>

@@ -1,0 +1,11 @@
+<div id="content">
+    <div class="row">
+        <big-breadcrumbs items="['Главная страница']" icon="home" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <h1 ng-show="!vm.isAuthenticated()">Для продолжения работы необходима авторизация</h1>
+
+    <div ng-show="vm.isAuthenticated()">
+    </div>
+
+</div>
