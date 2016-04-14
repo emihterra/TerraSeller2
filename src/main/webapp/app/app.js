@@ -22,6 +22,7 @@ angular.module('app', [
 
     // App
     'app.jHipster',
+    'app.terraSeller',
     'app.layout',
     //'app.chat',
     //'app.dashboard',

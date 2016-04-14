@@ -1,0 +1,85 @@
+<div id="content">
+    <div class="row">
+        <big-breadcrumbs items="['Поиск']" icon="search" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <div class="input-group input-group-lg">
+        <input class="form-control input-lg" type="text" placeholder="Код номенклатуры или название коллекции..." id="search-product" ng-model="vm.searchBox">
+        <div class="input-group-btn">
+            <button type="submit" class="btn btn-default" ng-click="vm.clickSearch();">
+                <i class="fa fa-fw fa-search fa-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <section widget-grid id="widget-grid">
+
+    <div class="row" ng-show="vm.searchResult.length > 0" style="margin-top: 50px">
+        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div jarvis-widget id="condenced-table-widget"
+                 data-widget-editbutton="false" data-widget-color="blueDark"
+                 data-widget-togglebutton="false" data-widget-deletebutton="false"
+                 data-widget-colorbutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                    <h2>Коллекция "{{vm.collection}}"</h2>
+                </header>
+                <div>
+                    <div class="widget-body no-padding">
+                        <div class="table-responsive">
+
+                            <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="checkbox-inline">
+                                            <i style="position: relative"></i>
+                                        </label>
+                                    </th>
+                                    <th>Название</th>
+                                    <th>Ед. измерения</th>
+                                    <th>Цена</th>
+                                    <th>Одного тона (макс.)</th>
+                                    <th>В наличии</th>
+                                    <th>Картинка</th>
+                                    <th>Инфо</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in vm.searchResult">
+                                    <td>
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="checkbox-inline" ng-model="item.checked">
+                                            <i></i>
+                                        </label>
+                                    </td>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.unit}}</td>
+                                    <td>{{item.price}} руб.</td>
+                                    <td>{{item.tonQty}}</td>
+                                    <td>{{item.fizQty}}</td>
+                                    <td>
+                                        <div style="width: 100px; height: 50px; overflow: hidden">
+                                            <img ng-click="clickImg(item)" ng-src="{{item.imgUrl}}" style="height: 50px">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-sm" ng-click="clickInfo(item)">
+                                            <span class="glyphicon glyphicon-question-sign"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+
+</div>
+

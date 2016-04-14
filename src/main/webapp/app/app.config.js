@@ -69,7 +69,7 @@ appConfig.sound_on = true;
 */
 
 
-appConfig.debugState = false;
+appConfig.debugState = true;
 appConfig.debugStyle = 'font-weight: bold; color: #00f;';
 appConfig.debugStyle_green = 'font-weight: bold; font-style:italic; color: #46C246;';
 appConfig.debugStyle_red = 'font-weight: bold; color: #ed1c24;';
@@ -78,7 +78,7 @@ appConfig.debugStyle_success = 'background-color:green; font-weight:bold; color:
 appConfig.debugStyle_error = 'background-color:#ed1c24; font-weight:bold; color:#fff;';
 
 
-appConfig.voice_command = true;
+appConfig.voice_command = false;
 appConfig.voice_command_auto = false;
 
 /*
@@ -267,6 +267,8 @@ if (appConfig.voice_command) {
 }
 
 appConfig.apiRootUrl = 'localApi';
+
+appConfig.apiSIUrl = 'http://192.168.14.188:8080/sitest/api/';
 
 window.appConfig = appConfig;
 
