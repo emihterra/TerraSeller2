@@ -13,7 +13,9 @@
 
     function terraSellerSearchService ($filter, $http) {
         var service = {
-            get: get
+            get: get,
+            searchCollections: searchCollections,
+            isCollectionType: isCollectionType
         };
 
         return service;
@@ -51,6 +53,28 @@
                 return data;
 //                var orderBy = $filter('orderBy');
 //                return orderBy(properties, 'prefix');
+            }
+        }
+
+        function searchCollections (emplid, itemcode) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + emplid + '/' + itemcode + '/search')
+                .then(getCollectionsComplete);
+
+            function getCollectionsComplete (response) {
+                return response.data;
+            }
+        }
+
+        function isCollectionType(itemcode) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + itemcode + '/gettype')
+                .then(getCollectionType);
+
+            function getCollectionType (response) {
+                if(response.data == 'Item'){
+                    return false;
+                } else {
+                    return true;
+                }
             }
         }
 

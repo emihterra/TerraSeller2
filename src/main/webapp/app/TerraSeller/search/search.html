@@ -12,17 +12,37 @@
         </div>
     </div>
 
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
+    <div class="row" ng-show="vm.possibleCollections.length > 0" style="margin-top: 50px">
+        <div class="col-xs-12 col-sm-6">
+            <label class="control-label"><span style="color: black">Выберите коллекцию:</span></label>
+
+            <div class="list-group address-list">
+                <a class="list-group-item"
+                   ng-repeat="posCollection in vm.possibleCollections"
+                   ng-click="vm.choosePossibleCollection(posCollection)">
+                    <b>{{ vm.shownameProd(posCollection.name) }}</b></a>
+            </div>
+        </div>
+    </div>
+
     <section widget-grid id="widget-grid">
 
     <div class="row" ng-show="vm.searchResult.length > 0" style="margin-top: 50px">
         <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <div jarvis-widget id="condenced-table-widget"
+            <div jarvis-widget id="condenced-table-widget1"
                  data-widget-editbutton="false" data-widget-color="blueDark"
                  data-widget-togglebutton="false" data-widget-deletebutton="false"
                  data-widget-colorbutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                    <h2>Коллекция "{{vm.collection}}"</h2>
+                    <h2>Коллекция "{{vm.collection}}" , производитель "{{vm.producer}}"</h2>
                 </header>
                 <div>
                     <div class="widget-body no-padding">
@@ -31,19 +51,19 @@
                             <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
                                 <thead>
                                 <tr>
-                                    <th>
+                                    <th style="vertical-align: middle">
                                         <label class="checkbox">
                                             <input type="checkbox" name="checkbox-inline">
                                             <i style="position: relative"></i>
                                         </label>
                                     </th>
-                                    <th>Название</th>
-                                    <th>Ед. измерения</th>
-                                    <th>Цена</th>
-                                    <th>Одного тона (макс.)</th>
-                                    <th>В наличии</th>
-                                    <th>Картинка</th>
-                                    <th>Инфо</th>
+                                    <th style="vertical-align: middle">Картинка</th>
+                                    <th style="vertical-align: middle">Одного тона<br>(макс.)</th>
+                                    <th style="vertical-align: middle">Инфо</th>
+                                    <th style="vertical-align: middle">Название</th>
+                                    <!--<th style="vertical-align: middle">Ед.изм</th>-->
+                                    <!--<th style="vertical-align: middle">Цена</th>-->
+                                    <!--<th style="vertical-align: middle">В наличии</th>-->
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -54,21 +74,24 @@
                                             <i></i>
                                         </label>
                                     </td>
-                                    <td>{{item.name}}</td>
-                                    <td>{{item.unit}}</td>
-                                    <td>{{item.price}} руб.</td>
-                                    <td>{{item.tonQty}}</td>
-                                    <td>{{item.fizQty}}</td>
                                     <td>
                                         <div style="width: 100px; height: 50px; overflow: hidden">
                                             <img ng-click="clickImg(item)" ng-src="{{item.imgUrl}}" style="height: 50px">
                                         </div>
                                     </td>
+                                    <td>{{item.tonQty}}</td>
                                     <td>
-                                        <button type="button" class="btn btn-default btn-sm" ng-click="clickInfo(item)">
+                                        <!--<button type="button" class="btn btn-default btn-sm" ng-click="clickInfo(item)">-->
+                                        <a data-toggle="modal" data-target="#myModal" href="app/TerraSeller/product/product.info.modal.html">
+                                        <button type="button" class="btn btn-default btn-sm">
                                             <span class="glyphicon glyphicon-question-sign"></span>
                                         </button>
+                                        </a>
                                     </td>
+                                    <td>{{vm.show2rowName(item.name)[0]}}<br>{{vm.show2rowName(item.name)[1]}} , {{item.unit}}</td>
+                                    <!--<td>{{item.unit}}</td>-->
+                                    <!--<td>{{item.price}} руб.</td>-->
+                                    <!--<td>{{item.fizQty}}</td>-->
                                 </tr>
                                 </tbody>
                             </table>

@@ -31,7 +31,7 @@ angular.module('app', [
     //'app.graphs',
     //'app.tables',
     //'app.forms',
-    //'app.ui',
+    'app.ui',
     //'app.widgets',
     //'app.maps',
     //'app.appViews',

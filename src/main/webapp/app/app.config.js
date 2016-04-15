@@ -268,7 +268,7 @@ if (appConfig.voice_command) {
 
 appConfig.apiRootUrl = 'localApi';
 
-appConfig.apiSIUrl = 'http://192.168.14.188:8080/sitest/api/';
+appConfig.apiSIUrl = 'http://192.168.14.188:8080/si/api/';
 
 window.appConfig = appConfig;
 
