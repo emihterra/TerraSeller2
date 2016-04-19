@@ -15,7 +15,8 @@
         var service = {
             get: get,
             searchCollections: searchCollections,
-            isCollectionType: isCollectionType
+            isCollectionType: isCollectionType,
+            getPicLinks: getPicLinks
         };
 
         return service;
@@ -75,6 +76,38 @@
                 } else {
                     return true;
                 }
+            }
+        }
+
+        function getPicLinks (itemCollectionID, itemProducerID) {
+            return $http.get(appConfig.apiSIUrl + 'product/piclinks/' + itemCollectionID + '/' + itemProducerID)
+                .then(getPicLinksComplete);
+
+            function getPicLinksComplete (response) {
+
+                var data = [];
+                var thumbUrl = "";
+                var bigUrl = "";
+                var picIndex = 0;
+
+                angular.forEach(response.data, function (item) {
+
+                    thumbUrl = item.name;
+                    thumbUrl = 'http://' + thumbUrl.substring(6);
+
+                    bigUrl = thumbUrl.substring(0, thumbUrl.length - 4);
+                    bigUrl = bigUrl + '_Z.jpg';
+
+                    data.push({
+                        thumbUrl: thumbUrl,
+                        bigUrl: bigUrl,
+                        idx: picIndex,
+                        active: false
+                    });
+                    picIndex += 1;
+                });
+
+                return data;
             }
         }
 

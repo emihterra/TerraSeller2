@@ -9,9 +9,9 @@
         .module('app.terraSeller')
         .controller('terraSellerSearchController', terraSellerSearchController);
 
-    terraSellerSearchController.$inject = ['$window', '$scope', 'terraSellerSearchService'];
+    terraSellerSearchController.$inject = ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService'];
 
-    function terraSellerSearchController ($window, $scope, terraSellerSearchService) {
+    function terraSellerSearchController ($window, $scope, terraSellerSearchService, terraSellerStockService) {
         var vm = this;
 
         vm.searchBox = '';              // модель поисковой строки
@@ -23,11 +23,24 @@
         vm.progSearchChanged = false;   // значение в поисковой строке изменено программно
         vm.isCollectionType = false;    // в строке поиска номенклатура или коллекция
         vm.employeeID = '5227';         // код пользователя
+        vm.selectedItem = null;         // продукт, на котором нажали кнопку Info
+        vm.selectedImgUrl = '';         // ссылка на выбранную картинку
+        vm.selectedImgTitle = '';       // заголовок для выбранной картинки
+        vm.selectedImgIndex = 0;       // индекс выбранной картинки
+        vm.stockData = [];              // Info по продукту - наличие на складах
+        vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
+        vm.checkAllState = false;       // выбрать все
 
         vm.clickSearch = clickSearch;
         vm.show2rowName = show2rowName;
         vm.choosePossibleCollection = choosePossibleCollection;
         vm.shownameProd = shownameProd;
+        vm.clickInfo = clickInfo;
+        vm.clickImg = clickImg;
+        vm.clickColPic = clickColPic;
+        vm.searchCollection = searchCollection;
+        vm.onKeyUp = onKeyUp;
+        vm.checkAll = checkAll;
 
         function clickSearch() {
             vm.searchResult = [];
@@ -45,6 +58,7 @@
                 vm.searchResult = searchResult;
 
                 if((vm.searchResult)&&(vm.searchResult.length > 0)){
+
                     vm.collection = vm.searchResult[0].itemCollectionID;
                     vm.producer = vm.searchResult[0].itemProducerID;
                     vm.possibleCollections = [];
@@ -52,14 +66,66 @@
                     terraSellerSearchService.isCollectionType(itemCode).then(function (value) {
                         vm.isCollectionType = value;
                     });
+
+                    terraSellerSearchService.getPicLinks(vm.collection, vm.producer).then(function (value) {
+                        vm.piclinks = value;
+
+                        if(vm.piclinks&&(vm.piclinks.length > 0)){
+                            vm.selectedImgUrl = vm.piclinks[0].bigUrl;
+                            vm.selectedImgIndex = vm.piclinks[0].idx;
+                        }
+                    });
                 }
 
             });
         }
 
-        function clickProductInfo(item){
+        function clickInfo(item){
+          vm.selectedItem = item;
+          vm.stockData = [];
+          vm.stockHeader = ['','','','',''];
 
+          terraSellerStockService.get(vm.employeeID, item.sidUser).then(function (stockInfo){
+              vm.stockData = stockInfo;
+
+              terraSellerStockService.getHeader(vm.employeeID).then(function (headerInfo){
+                  if(headerInfo) {
+                      vm.stockHeader = headerInfo.split(',');
+                  }
+              });
+          }),
+            function(err) {
+                //
+            }
         }
+
+        function clickImg(item){
+            vm.selectedImgIndex = 0;
+            vm.selectedImgUrl = item.imgUrl;
+            vm.selectedImgTitle = item.sidUser + ' - ' + item.name;
+        }
+
+        function clickColPic(item){
+
+            vm.selectedImgIndex = item.idx;
+            vm.selectedImgUrl = item.bigUrl;
+
+            angular.forEach(vm.piclinks, function(pic){
+               pic.active = false;
+            });
+
+            item.active = true;
+
+            vm.selectedImgTitle = vm.collection + ' - ' + vm.producer;
+        }
+
+        function searchCollection(){
+            if (vm.searchResult[0].itemCollectionID) {
+                vm.progSearchChanged = true;
+                vm.searchBox = vm.searchResult[0].itemCollectionID + ' - ' + vm.searchResult[0].itemProducerID;
+                search(vm.searchResult[0].itemCollectionID + ' - ' + vm.searchResult[0].itemProducerID);
+            }
+        };
 
         function choosePossibleCollection (collection) {
             vm.progSearchChanged = true;
@@ -77,6 +143,12 @@
             return fullName.split('|');
         }
 
+        function checkAll(){
+            angular.forEach(vm.searchResult, function (item) {
+                item.checked = vm.checkAllState;
+            });
+        };
+
         $scope.$watch('vm.searchBox', function (val) {
             if (vm.progSearchChanged) {
                 vm.progSearchChanged = false;
@@ -90,14 +162,17 @@
 
             vm.searchResult = [];
             vm.piclinks = [];
+            vm.checkAllState = false;
 
             terraSellerSearchService.searchCollections(vm.employeeID, val).then(function(collections) {
                 vm.possibleCollections = collections;
 
                 // убираем фокус , чтобы скрыть системное меню в мобильнике
-                var element = $window.document.getElementById('search-product');
-                if(element)
-                    element.blur();
+                if(vm.possibleCollections&&(vm.possibleCollections.length > 0)) {
+                    var element = $window.document.getElementById('search-product');
+                    if (element)
+                        element.blur();
+                }
             },
                 function(err) {
                     vm.possibleCollections = [];
@@ -106,6 +181,13 @@
 
 
         });
+
+        function onKeyUp ($event) {
+            var onKeyUpResult = ($window.event ? $event.keyCode : $event.which);
+            if (onKeyUpResult === 13) {
+                clickSearch();
+            }
+        };
 
     }
 })();
