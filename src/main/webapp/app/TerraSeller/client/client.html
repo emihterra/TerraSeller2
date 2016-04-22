@@ -1,0 +1,48 @@
+<div id="content">
+
+    <div class="row">
+        <big-breadcrumbs items="['Выбор клиента']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <div class="row" style="margin-bottom: 15px">
+        <label style="margin-left: 15px">
+            <input type="radio" ng-model="vm.searchType" value="byName">
+            Поиск по наименованию
+        </label>
+        <label style="margin-left: 15px">
+            <input type="radio" ng-model="vm.searchType" value="byCode">
+            Поиск по коду
+        </label>
+    </div>
+
+    <div class="input-group input-group-lg">
+        <input class="form-control input-lg" type="text"
+               placeholder="{{vm.searchType==='byName'&&'Наименование клиента'||'Код клиента'}}" id="search-product"
+               ng-model="vm.searchBox" ng-keyup="vm.onKeyUp($event)">
+        <div class="input-group-btn">
+            <button type="submit" class="btn btn-default" ng-click="vm.clickSearch();">
+                <i class="fa fa-fw fa-search fa-lg"></i>
+            </button>
+        </div>
+    </div>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
+    <div class="row" ng-show="vm.possibleClients.length > 0" style="margin-top: 50px">
+        <div class="col-xs-12 col-sm-6">
+            <label class="control-label"><span style="color: black">Выберите клиента:</span></label>
+
+            <div class="list-group address-list">
+                <a class="list-group-item"
+                   ng-repeat="posClient in vm.possibleClients"
+                   ng-click="vm.choosePossibleClient(posClient)">
+                    <b>{{posClient.name}}</b><br>{{posClient.address}}</a>
+            </div>
+        </div>
+    </div>
+
+</div>

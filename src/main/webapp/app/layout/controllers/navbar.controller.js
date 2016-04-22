@@ -22,6 +22,7 @@
          * Store the "settings account" in a separate variable, and not in the shared "account" variable.
          */
         var copyAccount = function (account) {
+
             if(account) {
                 return {
                     activated: account.activated,
@@ -29,7 +30,9 @@
                     firstName: account.firstName,
                     langKey: account.langKey,
                     lastName: account.lastName,
-                    login: account.login
+                    login: account.login,
+                    emplcode: account.emplcode,
+                    dimension: account.dimension
                 };
             } else {
                 return null;

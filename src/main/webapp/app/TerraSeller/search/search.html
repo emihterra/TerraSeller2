@@ -74,7 +74,7 @@
                                 <tr ng-repeat="item in vm.searchResult">
                                     <td>
                                         <label class="checkbox">
-                                            <input type="checkbox" name="checkbox-inline" ng-model="item.checked">
+                                            <input type="checkbox" name="checkbox-inline" ng-model="item.checked" ng-change="vm.checkedStateChanged()">
                                             <i></i>
                                         </label>
                                     </td>
@@ -107,6 +107,12 @@
             </div>
         </article>
     </div>
+
+    <a class="btn btn-primary" href-void style="margin-top: 10px;margin-bottom: 10px"
+       ng-class="{disabled:!vm.isChecked}" ng-show="vm.searchResult.length > 0">
+        <i class="fa fa-shopping-cart"></i> Добавить в корзину</a>
+
+    <h2 class="row-seperator-header" ng-show="vm.piclinks.length > 0"><i class="glyphicon glyphicon-picture"></i> Интерьеры:</h2>
 
     <div class="row" ng-show="vm.piclinks.length > 0">
         <div ng-repeat="pic in vm.piclinks" style="float: left; padding-left: 10px; padding-top: 10px">
@@ -225,7 +231,7 @@
                 <div class="modal-body">
 
                     <div id="myCarousel-2" class="carousel slide" data-smart-ride-carousel data-interval="0"
-                         ng-show="vm.piclinks&&vm.piclinks.length > 0">
+                         ng-show="(vm.piclinks)&&(vm.piclinks.length > 0)">
                         <div class="carousel-inner">
                             <div class="item" ng-repeat="pic in vm.piclinks" ng-class="{active:!$index}">
                             <!--<div class="item" ng-repeat="pic in vm.piclinks" active="pic.active">-->

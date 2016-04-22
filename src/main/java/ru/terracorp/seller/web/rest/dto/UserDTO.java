@@ -40,6 +40,12 @@ public class UserDTO {
     @Size(min = 2, max = 5)
     private String langKey;
 
+    @Size(max = 100)
+    private String dimension;
+
+    @Size(max = 20)
+    private String emplcode;
+
     private Set<String> authorities;
 
     public UserDTO() {
@@ -48,12 +54,14 @@ public class UserDTO {
     public UserDTO(User user) {
         this(user.getLogin(), null, user.getFirstName(), user.getLastName(),
             user.getEmail(), user.getActivated(), user.getLangKey(),
+            user.getDimension(), user.getEmplcode(),
             user.getAuthorities().stream().map(Authority::getName)
                 .collect(Collectors.toSet()));
     }
 
     public UserDTO(String login, String password, String firstName, String lastName,
-        String email, boolean activated, String langKey, Set<String> authorities) {
+        String email, boolean activated, String langKey,
+        String dimension, String emplcode, Set<String> authorities) {
 
         this.login = login;
         this.password = password;
@@ -63,6 +71,8 @@ public class UserDTO {
         this.activated = activated;
         this.langKey = langKey;
         this.authorities = authorities;
+        this.dimension = dimension;
+        this.emplcode = emplcode;
     }
 
     public String getPassword() {
@@ -97,6 +107,10 @@ public class UserDTO {
         return authorities;
     }
 
+    public String getDimension() { return dimension; }
+
+    public String getEmplcode() { return emplcode; }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -108,6 +122,8 @@ public class UserDTO {
             ", activated=" + activated +
             ", langKey='" + langKey + '\'' +
             ", authorities=" + authorities +
+            ", dimension='" + dimension + '\'' +
+            ", emplcode='" + emplcode + '\'' +
             "}";
     }
 }

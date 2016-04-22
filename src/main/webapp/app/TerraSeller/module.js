@@ -35,6 +35,23 @@
                         controllerAs: 'vm'
                     }
                 }
+            })
+
+            .state('app.terraSeller.client', {
+                url: '/client',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Выбор клиента',
+                    title: 'Выбор клиента'
+                },
+                views: {
+                    "content@app": {
+                        templateUrl: 'app/TerraSeller/client/client.html',
+                        controller: 'terraSellerClientController',
+                        controllerAs: 'vm'
+                    }
+                }
             });
+
     }
 })();

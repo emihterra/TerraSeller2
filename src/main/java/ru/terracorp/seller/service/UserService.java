@@ -88,7 +88,7 @@ public class UserService {
     }
 
     public User createUserInformation(String login, String password, String firstName, String lastName, String email,
-        String langKey) {
+        String langKey, String dimension, String emplcode) {
 
         User newUser = new User();
         Authority authority = authorityRepository.findOne("ROLE_USER");
@@ -101,6 +101,8 @@ public class UserService {
         newUser.setLastName(lastName);
         newUser.setEmail(email);
         newUser.setLangKey(langKey);
+        newUser.setDimension(dimension);
+        newUser.setEmplcode(emplcode);
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
@@ -118,6 +120,8 @@ public class UserService {
         user.setFirstName(managedUserDTO.getFirstName());
         user.setLastName(managedUserDTO.getLastName());
         user.setEmail(managedUserDTO.getEmail());
+        user.setDimension(managedUserDTO.getDimension());
+        user.setEmplcode(managedUserDTO.getEmplcode());
         if (managedUserDTO.getLangKey() == null) {
             user.setLangKey("en"); // default language
         } else {
@@ -142,12 +146,15 @@ public class UserService {
         return user;
     }
 
-    public void updateUserInformation(String firstName, String lastName, String email, String langKey) {
+    public void updateUserInformation(String firstName, String lastName, String email, String langKey,
+                                      String dimension, String emplcode) {
         userRepository.findOneByLogin(SecurityUtils.getCurrentUserLogin()).ifPresent(u -> {
             u.setFirstName(firstName);
             u.setLastName(lastName);
             u.setEmail(email);
             u.setLangKey(langKey);
+            u.setDimension(dimension);
+            u.setEmplcode(emplcode);
             userRepository.save(u);
             log.debug("Changed Information for User: {}", u);
         });

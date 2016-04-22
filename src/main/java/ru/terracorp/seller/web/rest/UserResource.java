@@ -1,17 +1,6 @@
 package ru.terracorp.seller.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ru.terracorp.seller.domain.Authority;
-import ru.terracorp.seller.domain.User;
-import ru.terracorp.seller.repository.AuthorityRepository;
-import ru.terracorp.seller.repository.UserRepository;
-import ru.terracorp.seller.security.AuthoritiesConstants;
-import ru.terracorp.seller.service.MailService;
-import ru.terracorp.seller.service.UserService;
-import ru.terracorp.seller.web.rest.dto.ManagedUserDTO;
-import ru.terracorp.seller.web.rest.dto.UserDTO;
-import ru.terracorp.seller.web.rest.util.HeaderUtil;
-import ru.terracorp.seller.web.rest.util.PaginationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,12 +11,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import ru.terracorp.seller.domain.Authority;
+import ru.terracorp.seller.domain.User;
+import ru.terracorp.seller.repository.AuthorityRepository;
+import ru.terracorp.seller.repository.UserRepository;
+import ru.terracorp.seller.security.AuthoritiesConstants;
+import ru.terracorp.seller.service.MailService;
+import ru.terracorp.seller.service.UserService;
+import ru.terracorp.seller.web.rest.dto.ManagedUserDTO;
+import ru.terracorp.seller.web.rest.util.HeaderUtil;
+import ru.terracorp.seller.web.rest.util.PaginationUtil;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -148,6 +149,8 @@ public class UserResource {
                 user.setEmail(managedUserDTO.getEmail());
                 user.setActivated(managedUserDTO.isActivated());
                 user.setLangKey(managedUserDTO.getLangKey());
+                user.setDimension(managedUserDTO.getDimension());
+                user.setEmplcode(managedUserDTO.getEmplcode());
                 Set<Authority> authorities = user.getAuthorities();
                 authorities.clear();
                 managedUserDTO.getAuthorities().stream().forEach(
@@ -165,7 +168,7 @@ public class UserResource {
 
     /**
      * GET  /users : get all users.
-     * 
+     *
      * @param pageable the pagination information
      * @return the ResponseEntity with status 200 (OK) and with body all users
      * @throws URISyntaxException if the pagination headers couldnt be generated

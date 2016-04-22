@@ -113,6 +113,33 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        <label class="control-label" for="emplcode">Код сотрудника</label>
+                        <input type="text" class="form-control" id="emplcode" name="emplcode"
+                               ng-model="vm.registerAccount.emplcode" ng-minlength=1 ng-maxlength=20 required maxlength="20">
+                        <div ng-show="form.emplcode.$dirty && form.emplcode.$invalid">
+                            <p class="help-block"
+                               ng-show="form.emplcode.$error.required">
+                                Требуется код сотрудника.
+                            </p>
+                            <p class="help-block"
+                               ng-show="form.emplcode.$error.minlength">
+                                Код сотрудника не менее 1 символа.
+                            </p>
+                            <p class="help-block"
+                               ng-show="form.emplcode.$error.maxlength">
+                                Код сотрудника не более 20 символов.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dimensions">Центр затрат</label>
+                        <select id="dimensions" name="dimensions" class="form-control" ng-model="vm.registerAccount.dimension">
+                            <option ng-repeat="option in vm.dimensions" value="{{option.num}}">{{option.num}}</option>
+                        </select>
+                    </div>
+
                     <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" translate="register.form.button">Register</button>
                 </form>
             </div>

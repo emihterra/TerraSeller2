@@ -9,9 +9,9 @@
         .module('app.terraSeller')
         .controller('terraSellerSearchController', terraSellerSearchController);
 
-    terraSellerSearchController.$inject = ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService'];
+    terraSellerSearchController.$inject = ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService', 'Principal'];
 
-    function terraSellerSearchController ($window, $scope, terraSellerSearchService, terraSellerStockService) {
+    function terraSellerSearchController ($window, $scope, terraSellerSearchService, terraSellerStockService, Principal) {
         var vm = this;
 
         vm.searchBox = '';              // модель поисковой строки
@@ -22,7 +22,6 @@
         vm.piclinks = [];               // сыылци на картинки интерьеров выбранной коллекции
         vm.progSearchChanged = false;   // значение в поисковой строке изменено программно
         vm.isCollectionType = false;    // в строке поиска номенклатура или коллекция
-        vm.employeeID = '5227';         // код пользователя
         vm.selectedItem = null;         // продукт, на котором нажали кнопку Info
         vm.selectedImgUrl = '';         // ссылка на выбранную картинку
         vm.selectedImgTitle = '';       // заголовок для выбранной картинки
@@ -30,6 +29,9 @@
         vm.stockData = [];              // Info по продукту - наличие на складах
         vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
         vm.checkAllState = false;       // выбрать все
+        vm.isChecked = false;           // есть выбранные продукты
+        vm.employeeID = '';             // код продавца
+        vm.employeeDimension = '';
 
         vm.clickSearch = clickSearch;
         vm.show2rowName = show2rowName;
@@ -41,9 +43,11 @@
         vm.searchCollection = searchCollection;
         vm.onKeyUp = onKeyUp;
         vm.checkAll = checkAll;
+        vm.checkedStateChanged = checkedStateChanged;
 
         function clickSearch() {
             vm.searchResult = [];
+            vm.isChecked = false;
             search(vm.searchBox);
         };
 
@@ -56,6 +60,7 @@
 
             terraSellerSearchService.get(vm.employeeID, itemCode).then(function(searchResult) {
                 vm.searchResult = searchResult;
+                vm.isChecked = false;
 
                 if((vm.searchResult)&&(vm.searchResult.length > 0)){
 
@@ -79,6 +84,11 @@
 
             });
         }
+
+        Principal.identity().then(function(account) {
+            vm.employeeID = account.emplcode;
+            vm.employeeDimension = account.dimension;
+        });
 
         function clickInfo(item){
           vm.selectedItem = item;
@@ -147,7 +157,19 @@
             angular.forEach(vm.searchResult, function (item) {
                 item.checked = vm.checkAllState;
             });
+            checkedStateChanged();
         };
+
+        function checkedStateChanged() {
+            var ret = false;
+
+            angular.forEach(vm.searchResult, function (item) {
+                if (item.checked) {
+                    ret = true;
+                }
+            });
+            vm.isChecked = ret;
+        }
 
         $scope.$watch('vm.searchBox', function (val) {
             if (vm.progSearchChanged) {
@@ -163,6 +185,7 @@
             vm.searchResult = [];
             vm.piclinks = [];
             vm.checkAllState = false;
+            vm.isChecked = false;
 
             terraSellerSearchService.searchCollections(vm.employeeID, val).then(function(collections) {
                 vm.possibleCollections = collections;
@@ -178,8 +201,6 @@
                     vm.possibleCollections = [];
                 }
             );
-
-
         });
 
         function onKeyUp ($event) {

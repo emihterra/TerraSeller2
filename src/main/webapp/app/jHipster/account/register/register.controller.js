@@ -6,9 +6,9 @@
         .controller('RegisterController', RegisterController);
 
 
-    RegisterController.$inject = ['$translate', '$timeout', 'Auth', 'LoginService'];
+    RegisterController.$inject = ['$translate', '$timeout', 'Auth', 'LoginService', 'terraSellerDimensionService'];
 
-    function RegisterController ($translate, $timeout, Auth, LoginService) {
+    function RegisterController ($translate, $timeout, Auth, LoginService, terraSellerDimensionService) {
         var vm = this;
 
         vm.doNotMatch = null;
@@ -18,6 +18,7 @@
         vm.register = register;
         vm.registerAccount = {};
         vm.success = null;
+        vm.dimensions = [];
 
         $timeout(function (){angular.element('[ng-model="vm.registerAccount.login"]').focus();});
 
@@ -45,5 +46,10 @@
                 });
             }
         }
+
+        terraSellerDimensionService.get().then(function(response) {
+            vm.dimensions = response;
+        });
+
     }
 })();
