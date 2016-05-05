@@ -14,7 +14,9 @@
     function terraSellerClientService ($http) {
         var service = {
             searchClient: getClients,
-            getDivisions: getDivisions
+            getDivisions: getDivisions,
+            getInfo: getInfo,
+            getStatistic: getStatistic
         };
 
         return service;
@@ -37,5 +39,22 @@
             }
         }
 
+        function getInfo(clientCode) {
+            return $http.get(appConfig.apiSIUrl + 'clients/info/' + clientCode)
+                .then(getClientInfoComplete);
+
+            function getClientInfoComplete (response) {
+                return response.data;
+            }
+        }
+
+        function getStatistic(clientCode) {
+            return $http.get(appConfig.apiSIUrl + 'clients/statistic/' + clientCode)
+                .then(getStatisticComplete);
+
+            function getStatisticComplete (response) {
+                return response.data;
+            }
+        }
     }
 })();

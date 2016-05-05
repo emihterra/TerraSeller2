@@ -116,7 +116,7 @@
                     <div class="form-group">
                         <label class="control-label" for="emplcode">Код сотрудника</label>
                         <input type="text" class="form-control" id="emplcode" name="emplcode"
-                               ng-model="vm.registerAccount.emplcode" ng-minlength=1 ng-maxlength=20 required maxlength="20">
+                               ng-model="vm.emplSettings.emplcode" ng-minlength=1 ng-maxlength=20 required maxlength="20">
                         <div ng-show="form.emplcode.$dirty && form.emplcode.$invalid">
                             <p class="help-block"
                                ng-show="form.emplcode.$error.required">
@@ -135,7 +135,7 @@
 
                     <div class="form-group">
                         <label for="dimensions">Центр затрат</label>
-                        <select id="dimensions" name="dimensions" class="form-control" ng-model="vm.registerAccount.dimension">
+                        <select id="dimensions" name="dimensions" class="form-control" ng-model="vm.emplSettings.dimension">
                             <option ng-repeat="option in vm.dimensions" value="{{option.num}}">{{option.num}}</option>
                         </select>
                     </div>

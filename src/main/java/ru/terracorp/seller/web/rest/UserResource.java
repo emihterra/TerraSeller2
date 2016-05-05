@@ -67,7 +67,6 @@ public class UserResource {
     @Inject
     private MailService mailService;
 
-
     @Inject
     private AuthorityRepository authorityRepository;
 
@@ -149,8 +148,6 @@ public class UserResource {
                 user.setEmail(managedUserDTO.getEmail());
                 user.setActivated(managedUserDTO.isActivated());
                 user.setLangKey(managedUserDTO.getLangKey());
-                user.setDimension(managedUserDTO.getDimension());
-                user.setEmplcode(managedUserDTO.getEmplcode());
                 Set<Authority> authorities = user.getAuthorities();
                 authorities.clear();
                 managedUserDTO.getAuthorities().stream().forEach(

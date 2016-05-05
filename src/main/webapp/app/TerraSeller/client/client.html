@@ -4,7 +4,15 @@
         <big-breadcrumbs items="['Выбор клиента']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
     </div>
 
-    <div class="row" style="margin-bottom: 15px">
+    <div class="row" style="margin-bottom: 15px;margin-left: 5px">
+        <div class="smart-form">
+            <label class="checkbox">
+                <input type="checkbox" name="useDefaultBuyer" ng-model="vm.emplSettings.useDefaultClient">
+                <i></i>Покупатель "Розница"</label>
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 15px" ng-hide="vm.useDefaultBuyer">
         <label style="margin-left: 15px">
             <input type="radio" ng-model="vm.searchType" value="byName">
             Поиск по наименованию
@@ -15,7 +23,7 @@
         </label>
     </div>
 
-    <div class="input-group input-group-lg">
+    <div class="input-group input-group-lg" ng-hide="vm.useDefaultBuyer">
         <input class="form-control input-lg" type="text"
                placeholder="{{vm.searchType==='byName'&&'Наименование клиента'||'Код клиента'}}" id="search-product"
                ng-model="vm.searchBox" ng-keyup="vm.onKeyUp($event)">
@@ -43,6 +51,19 @@
                     <b>{{posClient.name}}</b><br>{{posClient.address}}</a>
             </div>
         </div>
+    </div>
+
+    <div class="row" ng-show="vm.searchedClient.name" style="margin-top: 50px;margin-left: 15px">
+        <h3>Клиент: {{vm.searchedClient.name}}</h3>
+        <strong>Статистика: </strong>{{vm.clientStatistic}}<br><br>
+        <strong>Скидка: </strong>{{vm.clientInfo.discount}}<br><br>
+        <strong>Адрес: </strong>{{vm.clientInfo.address}}<br>
+        <abbr title="Телефон"><strong>Тел: </strong></abbr>{{vm.clientInfo.phone}}<br>
+        <abbr title="Мобильный телефон"><strong>Моб.тел: </strong></abbr>{{vm.clientInfo.cphone}}<br><br>
+        <strong>Группа: </strong>{{vm.clientInfo.group}}<br>
+        <strong>Менеджер: </strong>{{vm.clientInfo.manager}}<br>
+        <strong>Центр затрат: </strong>{{vm.clientInfo.center}}<br>
+        <strong>Примечание: </strong>{{vm.clientInfo.contacttext}}<br>
     </div>
 
 </div>

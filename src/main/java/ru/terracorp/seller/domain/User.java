@@ -64,14 +64,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Field("reset_date")
     private ZonedDateTime resetDate = null;
 
-    @Size(max = 100)
-    @Field("dimension")
-    private String dimension;
-
-    @Size(max = 20)
-    @Field("emlcode")
-    private String emplcode;
-
     @JsonIgnore
     private Set<Authority> authorities = new HashSet<>();
 
@@ -171,21 +163,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
         this.authorities = authorities;
     }
 
-    public String getEmplcode() {
-        return emplcode;
-    }
-
-    public void setEmplcode(String emplcode) {
-        this.emplcode = emplcode;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -220,8 +197,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
             ", activated='" + activated + '\'' +
             ", langKey='" + langKey + '\'' +
             ", activationKey='" + activationKey + '\'' +
-            ", dimension='" + dimension + '\'' +
-            ", emplcode='" + emplcode + '\'' +
             "}";
     }
 }

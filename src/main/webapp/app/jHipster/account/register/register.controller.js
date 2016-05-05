@@ -6,9 +6,9 @@
         .controller('RegisterController', RegisterController);
 
 
-    RegisterController.$inject = ['$translate', '$timeout', 'Auth', 'LoginService', 'terraSellerDimensionService'];
+    RegisterController.$inject = ['$translate', '$timeout', 'Auth', 'LoginService', 'terraSellerDimensionService', 'terraSellerSettingsService'];
 
-    function RegisterController ($translate, $timeout, Auth, LoginService, terraSellerDimensionService) {
+    function RegisterController ($translate, $timeout, Auth, LoginService, terraSellerDimensionService, terraSellerSettingsService) {
         var vm = this;
 
         vm.doNotMatch = null;
@@ -19,6 +19,12 @@
         vm.registerAccount = {};
         vm.success = null;
         vm.dimensions = [];
+        vm.emplSettings = {
+            login: "",
+            emplcode: "",
+            dimension: "",
+            lastClientCode: ""
+        };
 
         $timeout(function (){angular.element('[ng-model="vm.registerAccount.login"]').focus();});
 
@@ -34,6 +40,8 @@
 
                 Auth.createAccount(vm.registerAccount).then(function () {
                     vm.success = 'OK';
+                    vm.emplSettings.login = vm.registerAccount.login;
+                    terraSellerSettingsService.save(vm.emplSettings);
                 }).catch(function (response) {
                     vm.success = null;
                     if (response.status === 400 && response.data === 'login already in use') {

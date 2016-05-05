@@ -9,17 +9,20 @@
         .module('app.terraSeller')
         .controller('terraSellerClientController', terraSellerClientController);
 
-    terraSellerClientController.$inject = ['$window', '$scope', 'Principal', 'terraSellerClientService'];
+    terraSellerClientController.$inject = ['$window', '$scope', 'Principal', 'terraSellerClientService', 'terraSellerSettingsService'];
 
-    function terraSellerClientController ($window, $scope, Principal, terraSellerClientService) {
+    function terraSellerClientController ($window, $scope, Principal, terraSellerClientService, terraSellerSettingsService) {
         var vm = this;
 
         vm.searchBox = '';              // модель поисковой строки
         vm.searchType = "byName";       // тип поиска клиента
-        vm.searchResult = [];           // найденный клиент
+        vm.searchedClient = {};         // найденный клиент
         vm.possibleClients = [];        // список клиентов, при поиске по части наименования
         vm.progSearchChanged = false;   // значение в поисковой строке изменено программно
         vm.employeeID = '';             // код продавца
+        vm.clientStatistic = '';        // статистика по клиенту
+        vm.clientInfo = {};             // информация по клиенту
+        vm.emplSettings = terraSellerSettingsService.getDefSettingsJSON(); // настройки продавца
 
         vm.clickSearch = clickSearch;
         vm.choosePossibleClient = choosePossibleClient;
@@ -27,10 +30,11 @@
 
         Principal.identity().then(function(account) {
             vm.employeeID = account.emplcode;
+            vm.emplSettings = terraSellerSettingsService.getJSON_from_Str(account.emplSettings);
         });
 
         function clickSearch() {
-            vm.searchResult = [];
+            vm.searchedClient = {};
             search(vm.searchBox);
         };
 
@@ -45,11 +49,18 @@
                 vm.searchBox = clientName;
             };
 
-            terraSellerClientService.searchClient(clientName, vm.employeeID).then(function(searchResult) {
-                vm.searchResult = searchResult;
-
-                if((vm.searchResult)&&(vm.searchResult.length > 0)){
+            terraSellerClientService.searchClient(clientName, vm.employeeID).then(function(searchedClient) {
+                if((searchedClient)&&(searchedClient.length > 0)){
+                    vm.searchedClient = searchedClient[0];
                     vm.possibleClients = [];
+
+                   terraSellerClientService.getInfo(vm.searchedClient.code).then(function(clientInfo) {
+                        vm.clientInfo = clientInfo;
+                   });
+
+                    terraSellerClientService.getStatistic(vm.searchedClient.code).then(function(clientStatistic) {
+                        vm.clientStatistic = clientStatistic;
+                    });
                 }
 
             });
@@ -59,7 +70,8 @@
             vm.progSearchChanged = true;
             vm.searchBox = client.name;
             vm.possibleClients = [];
-            vm.searchResult = client;
+            vm.searchedClient = client;
+            search(client.name);
         };
 
         $scope.$watch('vm.searchBox', function (val) {
@@ -73,7 +85,7 @@
                 return;
             }
 
-            vm.searchResult = [];
+            vm.searchedClient = [];
 
             terraSellerClientService.searchClient(val, vm.employeeID).then(function(clients) {
                     vm.possibleClients = clients;
