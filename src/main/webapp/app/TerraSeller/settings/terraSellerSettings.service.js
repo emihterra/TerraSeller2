@@ -12,21 +12,41 @@
     terraSellerSettingsService.$inject = ['$resource'];
 
     function terraSellerSettingsService ($resource) {
-        var service = $resource('api/usersettings/:login', {}, {
-            'query': {method: 'GET', isArray: true},
-            'get': {
-                method: 'GET',
-                transformResponse: function (data) {
-                    data = angular.fromJson(data);
-                    return data;
-                }
-            },
-            'save': { method:'POST' },
-            'update': { method:'PUT' },
-            'delete':{ method:'DELETE'}
-        });
+
+        var service = {
+            data: data,
+            getDefault: getDefault
+        };
 
         return service;
+
+        function data() {
+            var serv = $resource('api/usersettings/:login', {}, {
+                'query': {method: 'GET', isArray: true},
+                'get': {
+                    method: 'GET',
+                    transformResponse: function (response) {
+                        response = angular.fromJson(response);
+                        return response;
+                    }
+                },
+                'save': {method: 'POST'},
+                'update': {method: 'PUT'},
+                'delete': {method: 'DELETE'}
+            });
+            return serv;
+        }
+
+        function getDefault() {
+            var emplSettings = {
+                login: "",
+                emplcode: "",
+                dimension: "",
+                lastClientCode: "",
+                useDefaultClient: true
+            };
+            return emplSettings;
+        }
 
     }
 })();

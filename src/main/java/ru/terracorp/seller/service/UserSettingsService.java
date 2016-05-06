@@ -32,19 +32,20 @@ public class UserSettingsService {
         });
     }
 
-    public UserSettings createUserSettings(String login, String emplcode, String dimension, String lastClientCode) {
+    public UserSettings createUserSettings(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient) {
         UserSettings newUserSettings = new UserSettings();
         newUserSettings.setLogin(login);
         newUserSettings.setEmplcode(emplcode);
         newUserSettings.setDimension(dimension);
         newUserSettings.setLastClientCode(lastClientCode);
+        newUserSettings.setUseDefaultClient(useDefaultClient);
         userSettingsRepository.save(newUserSettings);
         return newUserSettings;
     }
 
     void checkIfUserSettingsPresent(String login){
         if(!userSettingsRepository.findOneByLogin(login).isPresent()) {
-            createUserSettings(login, "", "", "");
+            createUserSettings(login, "", "", "", true);
         }
     }
 
@@ -81,7 +82,7 @@ public class UserSettingsService {
         });
     }
 
-    public void updateUserSettings(String login, String emplcode, String dimension, String lastClientCode){
+    public void updateUserSettings(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient){
 
         checkIfUserSettingsPresent(login);
 
@@ -89,6 +90,7 @@ public class UserSettingsService {
             u.setEmplcode(emplcode);
             u.setDimension(dimension);
             u.setLastClientCode(lastClientCode);
+            u.setUseDefaultClient(useDefaultClient);
             userSettingsRepository.save(u);
             log.debug("Changed Information for UserSettings: {}", u);
         });

@@ -21,19 +21,22 @@ public class UserSettingsDTO {
     @Size(max = 10)
     private String lastClientCode;
 
+    private Boolean useDefaultClient;
+
     public UserSettingsDTO() {
     }
 
     public UserSettingsDTO(UserSettings user) {
-        this(user.getLogin(), user.getEmplcode(), user.getDimension(), user.getLastClientCode());
+        this(user.getLogin(), user.getEmplcode(), user.getDimension(), user.getLastClientCode(), user.getUseDefaultClient());
     }
 
-    public UserSettingsDTO(String login, String emplcode, String dimension, String lastClientCode) {
+    public UserSettingsDTO(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient) {
 
         this.login = login;
         this.emplcode = emplcode;
         this.dimension = dimension;
         this.lastClientCode = lastClientCode;
+        this.useDefaultClient = useDefaultClient;
     }
 
     public String getEmplcode() {
@@ -66,6 +69,14 @@ public class UserSettingsDTO {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public Boolean getUseDefaultClient() {
+        return useDefaultClient;
+    }
+
+    public void setUseDefaultClient(Boolean useDefaultClient) {
+        this.useDefaultClient = useDefaultClient;
     }
 
     @Override

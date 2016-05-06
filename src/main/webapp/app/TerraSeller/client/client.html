@@ -7,12 +7,12 @@
     <div class="row" style="margin-bottom: 15px;margin-left: 5px">
         <div class="smart-form">
             <label class="checkbox">
-                <input type="checkbox" name="useDefaultBuyer" ng-model="vm.emplSettings.useDefaultClient">
+                <input type="checkbox" name="useDefaultClient" ng-model="vm.emplSettings.useDefaultClient" ng-change="vm.clickDefClient()">
                 <i></i>Покупатель "Розница"</label>
         </div>
     </div>
 
-    <div class="row" style="margin-bottom: 15px" ng-hide="vm.useDefaultBuyer">
+    <div class="row" style="margin-bottom: 15px" ng-hide="vm.emplSettings.useDefaultClient">
         <label style="margin-left: 15px">
             <input type="radio" ng-model="vm.searchType" value="byName">
             Поиск по наименованию
@@ -23,7 +23,7 @@
         </label>
     </div>
 
-    <div class="input-group input-group-lg" ng-hide="vm.useDefaultBuyer">
+    <div class="input-group input-group-lg" ng-hide="vm.emplSettings.useDefaultClient">
         <input class="form-control input-lg" type="text"
                placeholder="{{vm.searchType==='byName'&&'Наименование клиента'||'Код клиента'}}" id="search-product"
                ng-model="vm.searchBox" ng-keyup="vm.onKeyUp($event)">
@@ -53,8 +53,9 @@
         </div>
     </div>
 
-    <div class="row" ng-show="vm.searchedClient.name" style="margin-top: 50px;margin-left: 15px">
-        <h3>Клиент: {{vm.searchedClient.name}}</h3>
+    <div class="row" ng-show="!vm.emplSettings.useDefaultClient&&vm.clientInfo.name" style="margin-top: 50px;margin-left: 15px">
+        <h3>Клиент: {{vm.clientInfo.name}}</h3>
+        <strong>Код клиента: </strong>{{vm.clientInfo.code}}<br><br>
         <strong>Статистика: </strong>{{vm.clientStatistic}}<br><br>
         <strong>Скидка: </strong>{{vm.clientInfo.discount}}<br><br>
         <strong>Адрес: </strong>{{vm.clientInfo.address}}<br>

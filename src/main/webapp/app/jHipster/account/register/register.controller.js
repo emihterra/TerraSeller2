@@ -19,12 +19,7 @@
         vm.registerAccount = {};
         vm.success = null;
         vm.dimensions = [];
-        vm.emplSettings = {
-            login: "",
-            emplcode: "",
-            dimension: "",
-            lastClientCode: ""
-        };
+        vm.emplSettings = terraSellerSettingsService.getDefault();
 
         $timeout(function (){angular.element('[ng-model="vm.registerAccount.login"]').focus();});
 
@@ -41,7 +36,7 @@
                 Auth.createAccount(vm.registerAccount).then(function () {
                     vm.success = 'OK';
                     vm.emplSettings.login = vm.registerAccount.login;
-                    terraSellerSettingsService.save(vm.emplSettings);
+                    terraSellerSettingsService.data().save(vm.emplSettings);
                 }).catch(function (response) {
                     vm.success = null;
                     if (response.status === 400 && response.data === 'login already in use') {

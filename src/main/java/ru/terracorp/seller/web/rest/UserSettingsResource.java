@@ -64,6 +64,7 @@ public class UserSettingsResource {
                     user.setEmplcode(userSettingsDTO.getEmplcode());
                     user.setDimension(userSettingsDTO.getDimension());
                     user.setLastClientCode(userSettingsDTO.getLastClientCode());
+                    user.setUseDefaultClient(userSettingsDTO.getUseDefaultClient());
                     userSettingsRepository.save(user);
                     return ResponseEntity.ok()
                         .headers(HeaderUtil.createAlert("userManagement.updated", userSettingsDTO.getEmplcode()))
@@ -73,7 +74,9 @@ public class UserSettingsResource {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
         } else {
             UserSettings newUserSettings = userSettingsService.createUserSettings(
-                userSettingsDTO.getLogin(), userSettingsDTO.getEmplcode(), userSettingsDTO.getDimension(), userSettingsDTO.getLastClientCode());
+                userSettingsDTO.getLogin(), userSettingsDTO.getEmplcode(),
+                userSettingsDTO.getDimension(), userSettingsDTO.getLastClientCode(),
+                userSettingsDTO.getUseDefaultClient());
             return ResponseEntity.created(new URI("/api/usersettings/" + newUserSettings.getEmplcode()))
                 .headers(HeaderUtil.createAlert( "userSettings.created", newUserSettings.getEmplcode()))
                 .body(newUserSettings);
@@ -106,6 +109,7 @@ public class UserSettingsResource {
                 user.setEmplcode(userSettingsDTO.getEmplcode());
                 user.setDimension(userSettingsDTO.getDimension());
                 user.setLastClientCode(userSettingsDTO.getLastClientCode());
+                user.setUseDefaultClient(userSettingsDTO.getUseDefaultClient());
 
                 userSettingsRepository.save(user);
                 return ResponseEntity.ok()

@@ -15,12 +15,7 @@
         vm.settingsAccount = null;
         vm.success = null;
         vm.dimensions = [];
-        vm.emplSettings = {
-            login: "",
-            emplcode: "",
-            dimension: "",
-            lastClientCode: ""
-        };
+        vm.emplSettings = terraSellerSettingsService.getDefault();
 
         /**
          * Store the "settings account" in a separate variable, and not in the shared "account" variable.
@@ -42,7 +37,7 @@
 
         Principal.identity().then(function(account) {
             vm.settingsAccount = copyAccount(account);
-            terraSellerSettingsService.get({login: account.login}, function(result) {
+            terraSellerSettingsService.data().get({login: account.login}, function(result) {
                 vm.emplSettings = result;
             });
         });
@@ -52,7 +47,7 @@
                 vm.error = null;
                 vm.success = 'OK';
                 vm.emplSettings.login = vm.settingsAccount.login;
-                terraSellerSettingsService.update(vm.emplSettings);
+                terraSellerSettingsService.data().update(vm.emplSettings);
                 Principal.identity(true).then(function(account) {
                     vm.settingsAccount = copyAccount(account);
                 });

@@ -22,15 +22,26 @@
         vm.employeeID = '';             // код продавца
         vm.clientStatistic = '';        // статистика по клиенту
         vm.clientInfo = {};             // информация по клиенту
-        vm.emplSettings = terraSellerSettingsService.getDefSettingsJSON(); // настройки продавца
+        vm.emplSettings = terraSellerSettingsService.getDefault(); // настройки продавца
 
         vm.clickSearch = clickSearch;
         vm.choosePossibleClient = choosePossibleClient;
         vm.onKeyUp = onKeyUp;
+        vm.clickDefClient = clickDefClient;
 
         Principal.identity().then(function(account) {
             vm.employeeID = account.emplcode;
-            vm.emplSettings = terraSellerSettingsService.getJSON_from_Str(account.emplSettings);
+            terraSellerSettingsService.data().get({login: account.login}).$promise.then(function (response) {
+                vm.emplSettings = response;
+                if ((vm.emplSettings.lastClientCode)&&(!vm.emplSettings.useDefaultClient)){
+                    terraSellerClientService.getInfo(vm.emplSettings.lastClientCode).then(function(clientInfo) {
+                        vm.clientInfo = clientInfo;
+                    });
+                    terraSellerClientService.getStatistic(vm.emplSettings.lastClientCode).then(function(clientStatistic) {
+                        vm.clientStatistic = clientStatistic;
+                    });
+                }
+            });
         });
 
         function clickSearch() {
@@ -44,26 +55,42 @@
                 return;
             }
 
-            if(vm.searchBox != clientName){
-                vm.progSearchChanged = true;
-                vm.searchBox = clientName;
-            };
+            vm.clientInfo = {};
 
-            terraSellerClientService.searchClient(clientName, vm.employeeID).then(function(searchedClient) {
-                if((searchedClient)&&(searchedClient.length > 0)){
-                    vm.searchedClient = searchedClient[0];
-                    vm.possibleClients = [];
+            if(vm.searchType == "byName") {
+                if (vm.searchBox != clientName) {
+                    vm.progSearchChanged = true;
+                    vm.searchBox = clientName;
+                };
 
-                   terraSellerClientService.getInfo(vm.searchedClient.code).then(function(clientInfo) {
-                        vm.clientInfo = clientInfo;
-                   });
+                terraSellerClientService.searchClient(clientName, vm.employeeID).then(function (searchedClient) {
+                    if ((searchedClient) && (searchedClient.length > 0)) {
+                        vm.searchedClient = searchedClient[0];
+                        vm.possibleClients = [];
 
-                    terraSellerClientService.getStatistic(vm.searchedClient.code).then(function(clientStatistic) {
-                        vm.clientStatistic = clientStatistic;
-                    });
-                }
+                        terraSellerClientService.getInfo(vm.searchedClient.code).then(function (clientInfo) {
+                            vm.clientInfo = clientInfo;
+                            vm.emplSettings.lastClientCode = vm.searchedClient.code;
+                            terraSellerSettingsService.data().save(vm.emplSettings);
+                        });
 
-            });
+                        terraSellerClientService.getStatistic(vm.searchedClient.code).then(function (clientStatistic) {
+                            vm.clientStatistic = clientStatistic;
+                        });
+                    }
+
+                });
+            } else {
+                terraSellerClientService.getInfo(vm.searchBox).then(function (clientInfo) {
+                    vm.clientInfo = clientInfo;
+                    vm.emplSettings.lastClientCode = vm.searchBox;
+                    terraSellerSettingsService.data().save(vm.emplSettings);
+                });
+
+                terraSellerClientService.getStatistic(vm.searchBox).then(function (clientStatistic) {
+                    vm.clientStatistic = clientStatistic;
+                });
+            }
         }
 
         function choosePossibleClient (client) {
@@ -75,6 +102,11 @@
         };
 
         $scope.$watch('vm.searchBox', function (val) {
+
+            if(vm.searchType != "byName") {
+                return;
+            }
+
             if (vm.progSearchChanged) {
                 vm.progSearchChanged = false;
                 return;
@@ -102,6 +134,11 @@
                 clickSearch();
             }
         };
+
+        function clickDefClient() {
+            vm.searchBox = "";
+            terraSellerSettingsService.data().save(vm.emplSettings);
+        }
 
     }
 })();
