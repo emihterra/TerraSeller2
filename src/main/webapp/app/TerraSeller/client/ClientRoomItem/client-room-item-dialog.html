@@ -1,0 +1,62 @@
+
+<form name="editForm" role="form" novalidate ng-submit="vm.save()">
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                ng-click="vm.clear()">&times;</button>
+        <h4 class="modal-title" id="myClientRoomItemLabel">Create or edit a ClientRoomItem</h4>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group">
+            <label for="id" translate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                    ng-model="vm.clientRoomItem.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_id_client_room">Id_client_room</label>
+            <input type="number" class="form-control" name="id_client_room" id="field_id_client_room"
+                    ng-model="vm.clientRoomItem.id_client_room"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                    ng-model="vm.clientRoomItem.name"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_item_type">Item_type</label>
+            <input type="number" class="form-control" name="item_type" id="field_item_type"
+                    ng-model="vm.clientRoomItem.item_type"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_i_width">I_width</label>
+            <input type="number" class="form-control" name="i_width" id="field_i_width"
+                    ng-model="vm.clientRoomItem.i_width"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_i_height">I_height</label>
+            <input type="number" class="form-control" name="i_height" id="field_i_height"
+                    ng-model="vm.clientRoomItem.i_height"
+                     />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_i_top">I_top</label>
+            <input type="number" class="form-control" name="i_top" id="field_i_top"
+                    ng-model="vm.clientRoomItem.i_top"
+                     />
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clear()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;<span translate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

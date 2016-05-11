@@ -1,0 +1,66 @@
+<div id="content">
+
+    <div class="row">
+        <big-breadcrumbs items="['Помещения']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <jhi-alert></jhi-alert>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ui-sref="app.terraSeller.client-room.new" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Создать помещение
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive">
+        <table class="jh-table table table-striped">
+            <thead>
+                <tr>
+                    <th>Имя</th>
+                    <th>Длина</th>
+                    <th>Ширина</th>
+                    <th>Высота</th>
+                    <th>Н.бордюр</th>
+                    <th>В.бордюр</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="clientRoom in vm.clientRooms track by clientRoom.id">
+                    <td>{{clientRoom.name}}</td>
+                    <td>{{clientRoom.r_length}}</td>
+                    <td>{{clientRoom.r_width}}</td>
+                    <td>{{clientRoom.r_height}}</td>
+                    <td>{{clientRoom.bottom_border_height}}</td>
+                    <td>{{clientRoom.top_border_height}}</td>
+                    <td class="text-right">
+                        <div class="btn-group flex-btn-group-container">
+                            <button type="submit"
+                                    ui-sref="client-room-detail({id:clientRoom.id})"
+                                    class="btn btn-info btn-sm">
+                                <span class="glyphicon glyphicon-eye-open"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="client-room.edit({id:clientRoom.id})"
+                                    class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                            </button>
+                            <button type="submit"
+                                    ui-sref="client-room.delete({id:clientRoom.id})"
+                                    class="btn btn-danger btn-sm">
+                                <span class="glyphicon glyphicon-remove-circle"></span>
+                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

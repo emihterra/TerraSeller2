@@ -1,0 +1,48 @@
+
+<div>
+    <h2>ClientRoom {{vm.clientRoom.id}}</h2>
+    <hr>
+    <dl class="dl-horizontal">
+        <dt>Client</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.client}}<span>
+        </dd>
+        <hr>
+        <dt>Name</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.name}}<span>
+        </dd>
+        <hr>
+        <dt>R_length</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.r_length}}<span>
+        </dd>
+        <hr>
+        <dt>R_width</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.r_width}}<span>
+        </dd>
+        <hr>
+        <dt>R_height</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.r_height}}<span>
+        </dd>
+        <hr>
+        <dt>Bottom_border_height</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.bottom_border_height}}<span>
+        </dd>
+        <hr>
+        <dt>Top_border_height</dt></dt>
+        <dd>
+            <span>{{vm.clientRoom.top_border_height}}<span>
+        </dd>
+        <hr>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>

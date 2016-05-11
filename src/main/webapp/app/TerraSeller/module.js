@@ -51,6 +51,57 @@
                         controllerAs: 'vm'
                     }
                 }
+            })
+
+            .state('app.terraSeller.client-room', {
+                url: '/client-room',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Помещения',
+                    title: 'Помещения'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/client/ClientRoom/client-rooms.html',
+                        controller: 'ClientRoomController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+
+            .state('app.terraSeller.client-room.new', {
+                parent: 'app.terraSeller.client-room',
+                url: '/new',
+                data: {
+                    authorities: ['ROLE_USER']
+                },
+                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
+                    $uibModal.open({
+                        templateUrl: 'app/TerraSeller/client/ClientRoom/client-room-dialog.html',
+                        controller: 'ClientRoomDialogController',
+                        controllerAs: 'vm',
+                        backdrop: 'static',
+                        size: 'lg',
+                        resolve: {
+                            entity: function () {
+                                return {
+                                    client: null,
+                                    name: null,
+                                    r_length: null,
+                                    r_width: null,
+                                    r_height: null,
+                                    bottom_border_height: null,
+                                    top_border_height: null,
+                                    id: null
+                                };
+                            }
+                        }
+                    }).result.then(function() {
+                        $state.go('app.terraSeller.client-room', null, { reload: true });
+                    }, function() {
+                        $state.go('app.terraSeller.client-room');
+                    });
+                }]
             });
 
     }
