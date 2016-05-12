@@ -18,7 +18,9 @@
                     return data;
                 }
             },
-            'update': { method:'PUT' }
+            'save': { method:'POST' },
+            'update': { method:'PUT' },
+            'delete': { method:'DELETE' }
         });
     }
 })();

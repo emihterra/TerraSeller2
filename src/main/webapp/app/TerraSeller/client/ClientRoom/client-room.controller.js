@@ -5,11 +5,15 @@
         .module('app.terraSeller')
         .controller('ClientRoomController', ClientRoomController);
 
-    ClientRoomController.$inject = ['$scope', '$state', 'ClientRoom'];
+    ClientRoomController.$inject = ['$scope', 'ClientRoom'];
 
-    function ClientRoomController ($scope, $state, ClientRoom) {
+    function ClientRoomController ($scope, ClientRoom) {
         var vm = this;
+
         vm.clientRooms = [];
+
+        vm.deleteRoom = deleteRoom;
+
         vm.loadAll = function() {
             ClientRoom.query(function(result) {
                 vm.clientRooms = result;
@@ -17,6 +21,10 @@
         };
 
         vm.loadAll();
-        
+
+        function deleteRoom(id){
+            ClientRoom.delete(id);
+            vm.loadAll();
+        }
     }
 })();

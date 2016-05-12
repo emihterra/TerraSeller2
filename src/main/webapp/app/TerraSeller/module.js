@@ -70,38 +70,55 @@
             })
 
             .state('app.terraSeller.client-room.new', {
-                parent: 'app.terraSeller.client-room',
-                url: '/new',
+                url: '/new_client_room',
                 data: {
-                    authorities: ['ROLE_USER']
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Создание помещения',
+                    title: 'Создание помещения'
                 },
-                onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                    $uibModal.open({
+                views: {
+                    'content@app': {
                         templateUrl: 'app/TerraSeller/client/ClientRoom/client-room-dialog.html',
                         controller: 'ClientRoomDialogController',
-                        controllerAs: 'vm',
-                        backdrop: 'static',
-                        size: 'lg',
-                        resolve: {
-                            entity: function () {
-                                return {
-                                    client: null,
-                                    name: null,
-                                    r_length: null,
-                                    r_width: null,
-                                    r_height: null,
-                                    bottom_border_height: null,
-                                    top_border_height: null,
-                                    id: null
-                                };
-                            }
-                        }
-                    }).result.then(function() {
-                        $state.go('app.terraSeller.client-room', null, { reload: true });
-                    }, function() {
-                        $state.go('app.terraSeller.client-room');
-                    });
-                }]
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    entity: function () {
+                        return {
+                            client: null,
+                            name: null,
+                            r_length: null,
+                            r_width: null,
+                            r_height: null,
+                            bottom_border_height: null,
+                            top_border_height: null,
+                            id: null
+                        };
+                    }
+                }
+            })
+
+            .state('app.terraSeller.client-room.edit', {
+                parent: 'app.terraSeller.client-room',
+                url: '/edit_client_room/{id}',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Создание помещения',
+                    title: 'Создание помещения'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/client/ClientRoom/client-room-dialog.html',
+                        controller: 'ClientRoomDialogController',
+                        controllerAs: 'vm'
+                    }
+                },
+                resolve: {
+                    entity: ['$stateParams', 'ClientRoom', function($stateParams, ClientRoom) {
+                        return ClientRoom.get({id : $stateParams.id});
+                    }]
+                }
             });
 
     }

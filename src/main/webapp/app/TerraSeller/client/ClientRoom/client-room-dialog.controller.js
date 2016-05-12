@@ -5,11 +5,17 @@
         .module('app.terraSeller')
         .controller('ClientRoomDialogController', ClientRoomDialogController);
 
-    ClientRoomDialogController.$inject = ['$scope', '$stateParams', '$uibModalInstance', 'entity', 'ClientRoom'];
+    ClientRoomDialogController.$inject = ['$state', 'ClientRoom', 'entity'];
 
-    function ClientRoomDialogController ($scope, $stateParams, $uibModalInstance, entity, ClientRoom) {
+    function ClientRoomDialogController ($state, ClientRoom, entity) {
         var vm = this;
+
         vm.clientRoom = entity;
+        vm.error = null;
+        vm.success = null;
+        vm.errorNameExists = null;
+        vm.toList = toList;
+
         vm.load = function(id) {
             ClientRoom.get({id : id}, function(result) {
                 vm.clientRoom = result;
@@ -17,26 +23,27 @@
         };
 
         var onSaveSuccess = function (result) {
-            $scope.$emit('app.terraSeller:clientRoomUpdate', result);
-            $uibModalInstance.close(result);
-            vm.isSaving = false;
+            vm.error = null;
+            vm.success = 'OK';
         };
 
         var onSaveError = function () {
-            vm.isSaving = false;
+            vm.success = null;
+            vm.error = 'ERROR';
         };
 
         vm.save = function () {
-            vm.isSaving = true;
             if (vm.clientRoom.id !== null) {
+                console.log('ClientRoom.update');
                 ClientRoom.update(vm.clientRoom, onSaveSuccess, onSaveError);
             } else {
+                console.log('ClientRoom.save');
                 ClientRoom.save(vm.clientRoom, onSaveSuccess, onSaveError);
             }
         };
 
-        vm.clear = function() {
-            $uibModalInstance.dismiss('cancel');
+        function toList() {
+            $state.go('app.terraSeller.client-room');
         };
     }
 })();

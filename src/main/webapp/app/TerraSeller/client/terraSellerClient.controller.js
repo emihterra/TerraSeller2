@@ -31,8 +31,8 @@
 
         Principal.identity().then(function(account) {
             vm.employeeID = account.emplcode;
-            terraSellerSettingsService.data().get({login: account.login}).$promise.then(function (response) {
-                vm.emplSettings = response;
+            terraSellerSettingsService.get(account.login).then(function(settings){
+                vm.emplSettings = settings;
                 if ((vm.emplSettings.lastClientCode)&&(!vm.emplSettings.useDefaultClient)){
                     terraSellerClientService.getInfo(vm.emplSettings.lastClientCode).then(function(clientInfo) {
                         vm.clientInfo = clientInfo;
@@ -71,7 +71,7 @@
                         terraSellerClientService.getInfo(vm.searchedClient.code).then(function (clientInfo) {
                             vm.clientInfo = clientInfo;
                             vm.emplSettings.lastClientCode = vm.searchedClient.code;
-                            terraSellerSettingsService.data().save(vm.emplSettings);
+                            terraSellerSettingsService.save(vm.emplSettings);
                         });
 
                         terraSellerClientService.getStatistic(vm.searchedClient.code).then(function (clientStatistic) {
@@ -84,7 +84,7 @@
                 terraSellerClientService.getInfo(vm.searchBox).then(function (clientInfo) {
                     vm.clientInfo = clientInfo;
                     vm.emplSettings.lastClientCode = vm.searchBox;
-                    terraSellerSettingsService.data().save(vm.emplSettings);
+                    terraSellerSettingsService.save(vm.emplSettings);
                 });
 
                 terraSellerClientService.getStatistic(vm.searchBox).then(function (clientStatistic) {
@@ -137,7 +137,7 @@
 
         function clickDefClient() {
             vm.searchBox = "";
-            terraSellerSettingsService.data().save(vm.emplSettings);
+            terraSellerSettingsService.save(vm.emplSettings);
         }
 
     }

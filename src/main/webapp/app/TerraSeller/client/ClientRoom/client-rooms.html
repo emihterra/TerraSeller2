@@ -40,22 +40,16 @@
                     <td class="text-right">
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
-                                    ui-sref="client-room-detail({id:clientRoom.id})"
-                                    class="btn btn-info btn-sm">
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                                <span class="hidden-xs hidden-sm" translate="entity.action.view"></span>
-                            </button>
-                            <button type="submit"
-                                    ui-sref="client-room.edit({id:clientRoom.id})"
+                                    ui-sref="app.terraSeller.client-room.edit({id:clientRoom.id})"
                                     class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm" translate="entity.action.edit"></span>
+                                <span class="hidden-xs hidden-sm">Редактировать</span>
                             </button>
                             <button type="submit"
-                                    ui-sref="client-room.delete({id:clientRoom.id})"
+                                    ng-click="vm.deleteRoom({id:clientRoom.id})"
                                     class="btn btn-danger btn-sm">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm" translate="entity.action.delete"></span>
+                                <span class="hidden-xs hidden-sm">Удалить</span>
                             </button>
                         </div>
                     </td>

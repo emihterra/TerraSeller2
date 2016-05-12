@@ -9,16 +9,45 @@
         .module('app.terraSeller')
         .factory('terraSellerSettingsService', terraSellerSettingsService);
 
-    terraSellerSettingsService.$inject = ['$resource'];
+    terraSellerSettingsService.$inject = ['$resource', '$http'];
 
-    function terraSellerSettingsService ($resource) {
+    function terraSellerSettingsService ($resource, $http) {
 
         var service = {
-            data: data,
+            get: get,
+            update: update,
+            save: save,
             getDefault: getDefault
         };
 
         return service;
+
+        function get(login){
+            return $http.get('api/usersettings/' + login)
+                .then(getSettingsComplete);
+
+            function getSettingsComplete (response) {
+                return response.data;
+            }
+        };
+
+        function update(settings){
+            return $http.put('api/usersettings/', settings)
+                .then(getSettingsComplete);
+
+            function getSettingsComplete (response) {
+                return response.data;
+            }
+        };
+
+        function save(settings){
+            return $http.post('api/usersettings/', settings)
+                .then(getSettingsComplete);
+
+            function getSettingsComplete (response) {
+                return response.data;
+            }
+        };
 
         function data() {
             var serv = $resource('api/usersettings/:login', {}, {
@@ -26,8 +55,11 @@
                 'get': {
                     method: 'GET',
                     transformResponse: function (response) {
-                        response = angular.fromJson(response);
-                        return response;
+                        var res = {};
+                        if(response) {
+                            angular.fromJson(response);
+                        }
+                        return res;
                     }
                 },
                 'save': {method: 'POST'},

@@ -37,8 +37,8 @@
 
         Principal.identity().then(function(account) {
             vm.settingsAccount = copyAccount(account);
-            terraSellerSettingsService.data().get({login: account.login}, function(result) {
-                vm.emplSettings = result;
+            terraSellerSettingsService.get(account.login).then(function(settings){
+                vm.emplSettings = settings;
             });
         });
 
@@ -47,7 +47,7 @@
                 vm.error = null;
                 vm.success = 'OK';
                 vm.emplSettings.login = vm.settingsAccount.login;
-                terraSellerSettingsService.data().update(vm.emplSettings);
+                terraSellerSettingsService.update(vm.emplSettings);
                 Principal.identity(true).then(function(account) {
                     vm.settingsAccount = copyAccount(account);
                 });
