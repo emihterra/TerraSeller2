@@ -86,7 +86,7 @@
                 resolve: {
                     entity: function () {
                         return {
-                            client: null,
+                            client: 0,
                             name: null,
                             r_length: null,
                             r_width: null,

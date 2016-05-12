@@ -5,9 +5,9 @@
         .module('app.terraSeller')
         .controller('ClientRoomDialogController', ClientRoomDialogController);
 
-    ClientRoomDialogController.$inject = ['$state', 'ClientRoom', 'entity'];
+    ClientRoomDialogController.$inject = ['$state', 'ClientRoom', 'entity', 'Principal', 'terraSellerSettingsService'];
 
-    function ClientRoomDialogController ($state, ClientRoom, entity) {
+    function ClientRoomDialogController ($state, ClientRoom, entity, Principal, terraSellerSettingsService) {
         var vm = this;
 
         vm.clientRoom = entity;
@@ -16,11 +16,13 @@
         vm.errorNameExists = null;
         vm.toList = toList;
 
-        vm.load = function(id) {
-            ClientRoom.get({id : id}, function(result) {
-                vm.clientRoom = result;
+        Principal.identity().then(function(account) {
+            terraSellerSettingsService.get(account.login).then(function(settings){
+                if(settings.lastClientCode) {
+                    vm.clientRoom.client = settings.lastClientCode;
+                }
             });
-        };
+        });
 
         var onSaveSuccess = function (result) {
             vm.error = null;
@@ -34,10 +36,8 @@
 
         vm.save = function () {
             if (vm.clientRoom.id !== null) {
-                console.log('ClientRoom.update');
                 ClientRoom.update(vm.clientRoom, onSaveSuccess, onSaveError);
             } else {
-                console.log('ClientRoom.save');
                 ClientRoom.save(vm.clientRoom, onSaveSuccess, onSaveError);
             }
         };

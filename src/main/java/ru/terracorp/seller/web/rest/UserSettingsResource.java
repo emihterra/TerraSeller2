@@ -101,23 +101,31 @@ public class UserSettingsResource {
 
         Optional<UserSettings> existingUserSettings = userSettingsRepository.findOneByLogin(userSettingsDTO.getLogin());
         if (!existingUserSettings.isPresent()) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login has not been found")).body(null);
-        }
-        return userSettingsRepository
-            .findOneByLogin(userSettingsDTO.getLogin())
-            .map(user -> {
-                user.setEmplcode(userSettingsDTO.getEmplcode());
-                user.setDimension(userSettingsDTO.getDimension());
-                user.setLastClientCode(userSettingsDTO.getLastClientCode());
-                user.setUseDefaultClient(userSettingsDTO.getUseDefaultClient());
+//            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert("userManagement", "userexists", "Login has not been found")).body(null);
+            UserSettings newUserSettings = userSettingsService.createUserSettings(
+                userSettingsDTO.getLogin(), userSettingsDTO.getEmplcode(),
+                userSettingsDTO.getDimension(), userSettingsDTO.getLastClientCode(),
+                userSettingsDTO.getUseDefaultClient());
+            return ResponseEntity.created(new URI("/api/usersettings/" + newUserSettings.getEmplcode()))
+                .headers(HeaderUtil.createAlert( "userSettings.created", newUserSettings.getEmplcode()))
+                .body(newUserSettings);
+        } else {
+            return userSettingsRepository
+                .findOneByLogin(userSettingsDTO.getLogin())
+                .map(user -> {
+                    user.setEmplcode(userSettingsDTO.getEmplcode());
+                    user.setDimension(userSettingsDTO.getDimension());
+                    user.setLastClientCode(userSettingsDTO.getLastClientCode());
+                    user.setUseDefaultClient(userSettingsDTO.getUseDefaultClient());
 
-                userSettingsRepository.save(user);
-                return ResponseEntity.ok()
-                    .headers(HeaderUtil.createAlert("userManagement.updated", userSettingsDTO.getEmplcode()))
-                    .body(new UserSettingsDTO(userSettingsRepository
-                        .findOne(user.getId())));
-            })
-            .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+                    userSettingsRepository.save(user);
+                    return ResponseEntity.ok()
+                        .headers(HeaderUtil.createAlert("userManagement.updated", userSettingsDTO.getEmplcode()))
+                        .body(new UserSettingsDTO(userSettingsRepository
+                            .findOne(user.getId())));
+                })
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR));
+        }
 
     }
 

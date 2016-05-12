@@ -1,9 +1,7 @@
 package ru.terracorp.seller.service;
 
-import ru.terracorp.seller.domain.ClientRoom;
 import ru.terracorp.seller.web.rest.dto.ClientRoomDTO;
 
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,7 +11,7 @@ public interface ClientRoomService {
 
     /**
      * Save a clientRoom.
-     * 
+     *
      * @param clientRoomDTO the entity to save
      * @return the persisted entity
      */
@@ -21,14 +19,21 @@ public interface ClientRoomService {
 
     /**
      *  Get all the clientRooms.
-     *  
+     *
      *  @return the list of entities
      */
     List<ClientRoomDTO> findAll();
 
     /**
+     *  Get all the clientRooms by client.
+     *
+     *  @return the list of entities
+     */
+    List<ClientRoomDTO> findByClient(String client);
+
+    /**
      *  Get the "id" clientRoom.
-     *  
+     *
      *  @param id the id of the entity
      *  @return the entity
      */
@@ -36,7 +41,7 @@ public interface ClientRoomService {
 
     /**
      *  Delete the "id" clientRoom.
-     *  
+     *
      *  @param id the id of the entity
      */
     void delete(String id);

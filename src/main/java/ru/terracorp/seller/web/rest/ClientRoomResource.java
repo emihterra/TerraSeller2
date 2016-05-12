@@ -1,27 +1,23 @@
 package ru.terracorp.seller.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ru.terracorp.seller.domain.ClientRoom;
-import ru.terracorp.seller.service.ClientRoomService;
-import ru.terracorp.seller.web.rest.util.HeaderUtil;
-import ru.terracorp.seller.web.rest.dto.ClientRoomDTO;
-import ru.terracorp.seller.web.rest.mapper.ClientRoomMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.terracorp.seller.service.ClientRoomService;
+import ru.terracorp.seller.web.rest.dto.ClientRoomDTO;
+import ru.terracorp.seller.web.rest.mapper.ClientRoomMapper;
+import ru.terracorp.seller.web.rest.util.HeaderUtil;
 
 import javax.inject.Inject;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for managing ClientRoom.
@@ -31,13 +27,13 @@ import java.util.stream.Collectors;
 public class ClientRoomResource {
 
     private final Logger log = LoggerFactory.getLogger(ClientRoomResource.class);
-        
+
     @Inject
     private ClientRoomService clientRoomService;
-    
+
     @Inject
     private ClientRoomMapper clientRoomMapper;
-    
+
     /**
      * POST  /client-rooms : Create a new clientRoom.
      *
@@ -94,9 +90,15 @@ public class ClientRoomResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Transactional(readOnly = true)
-    public List<ClientRoomDTO> getAllClientRooms() {
-        log.debug("REST request to get all ClientRooms");
-        return clientRoomService.findAll();
+    public List<ClientRoomDTO> getAllClientRooms(@RequestParam("client") String client) {
+
+        if(client == null) {
+            log.debug("REST request to get all ClientRooms");
+            return clientRoomService.findAll();
+        } else {
+            log.debug("REST request to get ClientRooms by client " + client);
+            return clientRoomService.findByClient(client);
+        }
     }
 
     /**
