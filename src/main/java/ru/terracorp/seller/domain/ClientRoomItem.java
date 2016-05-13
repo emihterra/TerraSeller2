@@ -20,7 +20,7 @@ public class ClientRoomItem implements Serializable {
     private String id;
 
     @Field("id_client_room")
-    private Long id_client_room;
+    private String id_client_room;
 
     @Field("name")
     private String name;
@@ -45,11 +45,11 @@ public class ClientRoomItem implements Serializable {
         this.id = id;
     }
 
-    public Long getId_client_room() {
+    public String getId_client_room() {
         return id_client_room;
     }
 
-    public void setId_client_room(Long id_client_room) {
+    public void setId_client_room(String id_client_room) {
         this.id_client_room = id_client_room;
     }
 

@@ -11,7 +11,7 @@ public class ClientRoomItemDTO implements Serializable {
 
     private String id;
 
-    private Long id_client_room;
+    private String id_client_room;
 
 
     private String name;
@@ -36,11 +36,11 @@ public class ClientRoomItemDTO implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-    public Long getId_client_room() {
+    public String getId_client_room() {
         return id_client_room;
     }
 
-    public void setId_client_room(Long id_client_room) {
+    public void setId_client_room(String id_client_room) {
         this.id_client_room = id_client_room;
     }
     public String getName() {

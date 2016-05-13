@@ -5,6 +5,7 @@
     </div>
 
     <jhi-alert></jhi-alert>
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-xs-4 no-padding-left">
@@ -16,8 +17,16 @@
         </div>
     </div>
     <br/>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
     <div class="table-responsive">
-        <table class="jh-table table table-striped">
+        <!--<table class="jh-table table table-striped">-->
+        <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
             <thead>
                 <tr>
                     <th>Имя</th>
@@ -26,7 +35,7 @@
                     <th>Высота</th>
                     <th>Н.бордюр</th>
                     <th>В.бордюр</th>
-                    <th></th>
+                    <th>Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,15 +50,17 @@
                         <div class="btn-group flex-btn-group-container">
                             <button type="submit"
                                     ui-sref="app.terraSeller.client-room.edit({id:clientRoom.id})"
-                                    class="btn btn-primary btn-sm">
+                                    class="btn btn-primary btn-sm"
+                                    style="margin-left: 10px">
                                 <span class="glyphicon glyphicon-pencil"></span>
-                                <span class="hidden-xs hidden-sm">Редактировать</span>
+                                <span class="hidden-xs hidden-sm"></span>
                             </button>
                             <button type="submit"
                                     ng-click="vm.deleteRoom({id:clientRoom.id})"
-                                    class="btn btn-danger btn-sm">
+                                    class="btn btn-danger btn-sm"
+                                    style="margin-left: 10px">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
-                                <span class="hidden-xs hidden-sm">Удалить</span>
+                                <span class="hidden-xs hidden-sm"></span>
                             </button>
                         </div>
                     </td>

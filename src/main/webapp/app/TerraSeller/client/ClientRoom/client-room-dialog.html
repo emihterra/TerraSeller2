@@ -1,7 +1,12 @@
 <div id="content">
 
   <div class="row">
-      <big-breadcrumbs items="['Создание помещения']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+      <span ng-show="!vm.clientRoom.id">
+        <big-breadcrumbs items="['Создание помещения']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+      </span>
+      <span ng-show="vm.clientRoom.id">
+        <big-breadcrumbs items="['Редактирование помещения']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+      </span>
   </div>
 
     <div class="alert alert-success" ng-show="vm.success">
@@ -10,7 +15,7 @@
     </div>
 
     <div class="alert alert-danger" ng-show="vm.errorNameExists">
-        <strong>Помещение с таким наименованием уже усть!</strong> Пожалуйста укажите другое.
+        <strong>Помещение с таким наименованием уже есть!</strong> Пожалуйста укажите другое.
     </div>
 
     <div class="alert alert-danger" ng-show="vm.error">
@@ -63,4 +68,118 @@
         </button>
 
   </form>
+
+    <br/><br/><br/>
+
+    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div jarvis-widget id="condenced-table-widget1"
+             data-widget-editbutton="false" data-widget-color="blueDark"
+             data-widget-togglebutton="false" data-widget-deletebutton="false"
+             data-widget-colorbutton="false">
+            <header>
+                <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                <h2>Дополнительные элементы</h2>
+            </header>
+            <div>
+                <div class="widget-body no-padding">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                            <thead>
+                            <tr>
+                                <th>Имя</th>
+                                <th>Тип</th>
+                                <th>Ширина</th>
+                                <th>Высота</th>
+                                <!--<th>Верх.точка</th>-->
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="clientRoomItem in vm.clientRoomItems track by clientRoomItem.id">
+                                <td>{{clientRoomItem.name}}</td>
+                                <td>{{clientRoomItem.item_type}}</td>
+                                <td>{{clientRoomItem.i_width}}</td>
+                                <td>{{clientRoomItem.i_height}}</td>
+                                <!--<td>{{clientRoomItem.i_top}}</td>-->
+                                <td class="text-right">
+                                    <div class="btn-group flex-btn-group-container">
+                                        <button data-toggle="modal" data-target="#confirmItemDeletion" ng-click="vm.itemForDeletion=clientRoomItem"
+                                                class="btn btn-danger btn-sm">
+                                            <span class="glyphicon glyphicon-remove-circle"></span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </article>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" ng-click="vm.newItem()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Добавить элемент
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <form name="editItemForm" role="form" novalidate ng-submit="vm.saveItemEditing()" ng-show="vm.newItemEditing">
+        <div class="form-group">
+            <label class="control-label" for="field_item_name">Наименование</label>
+            <input type="text" class="form-control" name="name" id="field_item_name"
+                   ng-model="vm.clientRoomItem.name"
+            />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_item_i_width">Ширина</label>
+            <input type="number" class="form-control" name="i_width" id="field_item_i_width"
+                   ng-model="vm.clientRoomItem.i_width"
+            />
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_item_i_height">Высота</label>
+            <input type="number" class="form-control" name="i_height" id="field_item_i_height"
+                   ng-model="vm.clientRoomItem.i_height"
+            />
+        </div>
+        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.cancelItemEditing()">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;Отмена
+        </button>
+        <button type="submit" class="btn btn-primary">
+            <span class="glyphicon glyphicon-save"></span>&nbsp;Сохранить
+        </button>
+    </form>
+
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmItemDeletion" tabindex="-1" role="dialog" aria-labelledby="confirmItemDeletionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="confirmItemDeletionLabel">Удаление элемента</h4>
+            </div>
+            <div class="modal-body">
+                <p>Удалить элемент "{{vm.itemForDeletion.name}}" ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clearItemDeletion()">
+                    Отмена
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.confirmItemDelete(vm.itemForDeletion.id)">
+                    Удалить
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
