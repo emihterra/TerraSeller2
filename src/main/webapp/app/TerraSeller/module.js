@@ -119,7 +119,23 @@
                         return ClientRoom.get({id : $stateParams.id});
                     }]
                 }
-            });
+            })
 
+            .state('app.terraSeller.client-basket', {
+                url: '/client-basket',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Корзины',
+                    title: 'Корзины'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/client/ClientBasket/client-baskets.html',
+                        controller: 'ClientBasketController',
+                        controllerAs: 'vm'
+                    }
+                }
+            });
+        
     }
 })();

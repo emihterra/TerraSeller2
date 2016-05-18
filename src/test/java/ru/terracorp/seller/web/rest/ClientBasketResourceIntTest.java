@@ -1,6 +1,6 @@
 package ru.terracorp.seller.web.rest;
 
-import ru.terracorp.seller.SchoolApp;
+import ru.terracorp.seller.TerraSeller;
 import ru.terracorp.seller.domain.ClientBasket;
 import ru.terracorp.seller.repository.ClientBasketRepository;
 import ru.terracorp.seller.service.ClientBasketService;
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @see ClientBasketResource
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SchoolApp.class)
+@SpringApplicationConfiguration(classes = TerraSeller.class)
 @WebAppConfiguration
 @IntegrationTest
 public class ClientBasketResourceIntTest {

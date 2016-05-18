@@ -1,0 +1,86 @@
+<div id="content">
+
+    <div class="row">
+        <big-breadcrumbs items="['Корзины']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-4 no-padding-left">
+                <button class="btn btn-primary" data-toggle="modal" data-target="#newBasket" >
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Создать корзину
+                </button>
+            </div>
+        </div>
+    </div>
+    <br/>
+
+    <div class="alert alert-success" ng-show="vm.success">
+        <strong>Корзина добавлена!</strong>
+    </div>
+
+    <div class="alert alert-danger" ng-show="vm.errorNameExists">
+        <strong>Корзина с таким наименованием уже есть!</strong> Пожалуйста укажите другое.
+    </div>
+
+    <div class="alert alert-danger" ng-show="vm.error">
+        <strong>Произошла ошибка!</strong> Корзина не добавлена.
+    </div>
+
+    <div class="jarviswidget well" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false">
+        <div class="widget-body">
+            <p>vm.clientName</p>
+
+            <ul id="basketTabs" class="nav nav-tabs bordered">
+                <li ng-class="{ active: vm.isBasketActive(basket.id) }" ng-repeat="basket in vm.clientBaskets" ng-click="vm.selectBasket(basket)">
+                    <a href="#{{ basket.id }}" data-toggle="tab">{{basket.name}}</a>
+                </li>
+            </ul>
+
+            <div id="basketTabsContent" class="tab-content padding-10">
+                <div class="tab-pane fade in active" id="{{ basket.id }}" ng-repeat="basket in vm.clientBaskets">
+                    <p>
+                        {{ basket.name }} I have six locks on my door all in a row. When I go out, I lock every other one. I figure no matter how long somebody stands there picking the locks, they are always locking three.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newBasket" tabindex="-1" role="dialog" aria-labelledby="newBasketLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="newBasketLabel">Новая корзина</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" for="field_name">Name</label>
+                <input type="text" class="form-control" name="name" id="field_name"
+                       ng-model="vm.newBasket.name"
+                />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.cancelNewBasket()">
+                    Отмена
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.addNewBasket()">
+                    Добавить
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+

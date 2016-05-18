@@ -44,8 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ClientRoomItemResourceIntTest {
 
 
-    private static final Long DEFAULT_ID_CLIENT_ROOM = 1L;
-    private static final Long UPDATED_ID_CLIENT_ROOM = 2L;
+    private static final String DEFAULT_ID_CLIENT_ROOM = "123";
+    private static final String UPDATED_ID_CLIENT_ROOM = "456";
     private static final String DEFAULT_NAME = "AAAAA";
     private static final String UPDATED_NAME = "BBBBB";
 
@@ -95,7 +95,7 @@ public class ClientRoomItemResourceIntTest {
     public void initTest() {
         clientRoomItemRepository.deleteAll();
         clientRoomItem = new ClientRoomItem();
-        clientRoomItem.setId_client_room(DEFAULT_ID_CLIENT_ROOM);
+        clientRoomItem.setIdClientRoom(DEFAULT_ID_CLIENT_ROOM);
         clientRoomItem.setName(DEFAULT_NAME);
         clientRoomItem.setItem_type(DEFAULT_ITEM_TYPE);
         clientRoomItem.seti_width(DEFAULT_I_WIDTH);
@@ -119,7 +119,7 @@ public class ClientRoomItemResourceIntTest {
         List<ClientRoomItem> clientRoomItems = clientRoomItemRepository.findAll();
         assertThat(clientRoomItems).hasSize(databaseSizeBeforeCreate + 1);
         ClientRoomItem testClientRoomItem = clientRoomItems.get(clientRoomItems.size() - 1);
-        assertThat(testClientRoomItem.getId_client_room()).isEqualTo(DEFAULT_ID_CLIENT_ROOM);
+        assertThat(testClientRoomItem.getIdClientRoom()).isEqualTo(DEFAULT_ID_CLIENT_ROOM);
         assertThat(testClientRoomItem.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testClientRoomItem.getItem_type()).isEqualTo(DEFAULT_ITEM_TYPE);
         assertThat(testClientRoomItem.geti_width()).isEqualTo(DEFAULT_I_WIDTH);
@@ -137,7 +137,7 @@ public class ClientRoomItemResourceIntTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.[*].id").value(hasItem(clientRoomItem.getId())))
-                .andExpect(jsonPath("$.[*].id_client_room").value(hasItem(DEFAULT_ID_CLIENT_ROOM.intValue())))
+                .andExpect(jsonPath("$.[*].idClientRoom").value(hasItem(DEFAULT_ID_CLIENT_ROOM)))
                 .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
                 .andExpect(jsonPath("$.[*].item_type").value(hasItem(DEFAULT_ITEM_TYPE)))
                 .andExpect(jsonPath("$.[*].i_width").value(hasItem(DEFAULT_I_WIDTH)))
@@ -155,7 +155,7 @@ public class ClientRoomItemResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.id").value(clientRoomItem.getId()))
-            .andExpect(jsonPath("$.id_client_room").value(DEFAULT_ID_CLIENT_ROOM.intValue()))
+            .andExpect(jsonPath("$.idClientRoom").value(DEFAULT_ID_CLIENT_ROOM))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.item_type").value(DEFAULT_ITEM_TYPE))
             .andExpect(jsonPath("$.i_width").value(DEFAULT_I_WIDTH))
@@ -179,7 +179,7 @@ public class ClientRoomItemResourceIntTest {
         // Update the clientRoomItem
         ClientRoomItem updatedClientRoomItem = new ClientRoomItem();
         updatedClientRoomItem.setId(clientRoomItem.getId());
-        updatedClientRoomItem.setId_client_room(UPDATED_ID_CLIENT_ROOM);
+        updatedClientRoomItem.setIdClientRoom(UPDATED_ID_CLIENT_ROOM);
         updatedClientRoomItem.setName(UPDATED_NAME);
         updatedClientRoomItem.setItem_type(UPDATED_ITEM_TYPE);
         updatedClientRoomItem.seti_width(UPDATED_I_WIDTH);
@@ -196,7 +196,7 @@ public class ClientRoomItemResourceIntTest {
         List<ClientRoomItem> clientRoomItems = clientRoomItemRepository.findAll();
         assertThat(clientRoomItems).hasSize(databaseSizeBeforeUpdate);
         ClientRoomItem testClientRoomItem = clientRoomItems.get(clientRoomItems.size() - 1);
-        assertThat(testClientRoomItem.getId_client_room()).isEqualTo(UPDATED_ID_CLIENT_ROOM);
+        assertThat(testClientRoomItem.getIdClientRoom()).isEqualTo(UPDATED_ID_CLIENT_ROOM);
         assertThat(testClientRoomItem.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testClientRoomItem.getItem_type()).isEqualTo(UPDATED_ITEM_TYPE);
         assertThat(testClientRoomItem.geti_width()).isEqualTo(UPDATED_I_WIDTH);
