@@ -30,20 +30,79 @@
 
     <div class="jarviswidget well" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false">
         <div class="widget-body">
-            <p>vm.clientName</p>
+            <p></p>
 
             <ul id="basketTabs" class="nav nav-tabs bordered">
-                <li ng-class="{ active: vm.isBasketActive(basket.id) }" ng-repeat="basket in vm.clientBaskets" ng-click="vm.selectBasket(basket)">
+                <li ng-repeat="basket in vm.clientBaskets" ng-click="vm.selectBasket(basket)" ng-class="{active: basket.id == vm.clientBasket.id}">
                     <a href="#{{ basket.id }}" data-toggle="tab">{{basket.name}}</a>
                 </li>
             </ul>
 
             <div id="basketTabsContent" class="tab-content padding-10">
-                <div class="tab-pane fade in active" id="{{ basket.id }}" ng-repeat="basket in vm.clientBaskets">
-                    <p>
-                        {{ basket.name }} I have six locks on my door all in a row. When I go out, I lock every other one. I figure no matter how long somebody stands there picking the locks, they are always locking three.
-                    </p>
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                        <thead>
+                        <tr>
+                            <th style="vertical-align: middle">Количество</th>
+                            <th style="vertical-align: middle">Картинка</th>
+                            <th style="vertical-align: middle;width: 20px">Инфо</th>
+                            <th style="vertical-align: middle;width: 20px">Тип</th>
+                            <th style="vertical-align: middle">Название</th>
+                            <th style="vertical-align: middle">Цена</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="item in vm.basketItems">
+                            <td>
+                                <input type="text"
+                                       min="0"
+                                       ng-model="item.qty"
+                                       ng-keyup="item.recounted = false;vm.checkItemQty(item);"
+                                       style="width: 80px; height: 30px;text-align: center"
+                                       onClick="this.select();"/>
+                            </td>
+                            <td width="50px">
+                                <div style="width: 50px;height: 50px; overflow: hidden">
+                                    <a data-toggle="modal" data-target="#productImgModal">
+                                        <img ng-click="vm.selectedImgTitle=item.name;vm.selectedImgUrl=item.imglink" ng-src="{{item.imglink}}" style="height: 50px">
+                                    </a>
+                                </div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#productInfoModal" ng-click="vm.clickInfo(item)">
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                </button>
+                            </td>
+                            <td>
+                                <a href="#">{{ vm.getTypeStr(item) }}</a>
+                            </td>
+                            <td><span style="color: #0c7cd5">{{item.code}}</span><br>
+                                <span style="color: #019b15">{{vm.show2rowName(item.name)[0]}}</span><br>
+                                {{vm.show2rowName(item.name)[1]}} , {{item.unit}}
+                            </td>
+                            <td>
+                                {{ item.price }} руб.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">Итого: {{ vm.basketSum }} руб.</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
+
+                <div class="btn-group dropdown" data-dropdown ng-show="vm.basketItems.length > 0" style="margin-top: 30px;margin-bottom: 30px">
+                    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" ng-class="{disabled:vm.isChecked}">
+                        <i class="fa fa-usd"></i> Рассчитать для помещения <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="room in vm.clientRooms">
+                            <a href="#/client-basket" ng-click="vm.countByRoom(room.id)">{{ room.name }}</a>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
         </div>
     </div>
@@ -78,6 +137,100 @@
                 </button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.addNewBasket()">
                     Добавить
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="productImgModal" tabindex="-1" role="dialog" aria-labelledby="productImgLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="productImgLabel">{{vm.selectedImgTitle}}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <center><img ng-src="{{vm.selectedImgUrl}}" style="width: 100%; height: 100%; max-width: 800px; max-height: 600px"></center>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Закрыть
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="productInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">{{vm.selectedItem.code}} - {{vm.selectedItem.name}}</h4>
+                Износостойкость: {{vm.selectedItem.iznos}} , Цвет: {{vm.selectedItem.color}}
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="prodInfoTable" class="table table-bordered table-condensed table-hover">
+                            <tbody style=background:white>
+                            <tr>
+                                <th colspan="3">
+                                    <div>
+                                        <span style="color: black;">Физ. доступно:</span> <span style="color: red;">{{ vm.stockHeader[0] }}</span>
+                                        <span style="color: black;">Полный остаток:</span> <span style="color: red;">{{ vm.stockHeader[1] }}</span>
+                                        <span style="color: black;">Резерв:</span> <span style="color: red;">{{ vm.stockHeader[2] }}</span>
+                                        <span style="color: black;">В пути:</span> <span style="color: red;">{{ vm.stockHeader[3] }}</span>
+                                        <span style="color: black;">В заказах:</span> <span style="color: red;">{{ vm.stockHeader[4] }}</span>
+                                    </div>
+
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th><span style="color:black">Склад</span></th>
+                                <th><span style="color:black">Аналитика</span></th>
+                                <th><span style="color:black">Физ.дост.</span></th>
+                            </tr>
+
+                            <tr ng-repeat="item in vm.stockData | orderBy:['+stock','-age']">
+                                <td>
+                                    {{item.stock}}
+                                </td>
+
+                                <td>
+                                    {{item.analitics}}
+                                </td>
+
+                                <td>
+                                    {{item.age}}
+                                </td>
+
+                            </tr>
+
+                            <tfoot>
+                            </tfoot>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Закрыть
                 </button>
             </div>
         </div><!-- /.modal-content -->

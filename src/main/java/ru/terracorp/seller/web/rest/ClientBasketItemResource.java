@@ -90,9 +90,14 @@ public class ClientBasketItemResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Transactional(readOnly = true)
-    public List<ClientBasketItemDTO> getAllClientBasketItems() {
-        log.debug("REST request to get all ClientBasketItems");
-        return clientBasketItemService.findAll();
+    public List<ClientBasketItemDTO> getAllClientBasketItems(@RequestParam(name = "idbasket", required = false, defaultValue = "") String idbasket) {
+        if (idbasket.isEmpty()) {
+            log.debug("REST request to get all ClientBasketItems");
+            return clientBasketItemService.findAll();
+        } else {
+            log.debug("REST request to get all ClientBasketItems");
+            return clientBasketItemService.findByIdClientBasket(idbasket);
+        }
     }
 
     /**

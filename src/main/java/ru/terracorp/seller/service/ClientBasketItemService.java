@@ -20,16 +20,16 @@ import java.util.stream.Collectors;
 public class ClientBasketItemService {
 
     private final Logger log = LoggerFactory.getLogger(ClientBasketItemService.class);
-    
+
     @Inject
     private ClientBasketItemRepository clientBasketItemRepository;
-    
+
     @Inject
     private ClientBasketItemMapper clientBasketItemMapper;
-    
+
     /**
      * Save a clientBasketItem.
-     * 
+     *
      * @param clientBasketItemDTO the entity to save
      * @return the persisted entity
      */
@@ -43,12 +43,26 @@ public class ClientBasketItemService {
 
     /**
      *  Get all the clientBasketItems.
-     *  
+     *
      *  @return the list of entities
      */
     public List<ClientBasketItemDTO> findAll() {
         log.debug("Request to get all ClientBasketItems");
         List<ClientBasketItemDTO> result = clientBasketItemRepository.findAll().stream()
+            .map(clientBasketItemMapper::clientBasketItemToClientBasketItemDTO)
+            .collect(Collectors.toCollection(LinkedList::new));
+        return result;
+    }
+
+    /**
+     *  Get the clientBasketItems by Basket ID.
+     *
+     *  @param idClientBasket the id of the Client Basket
+     *  @return the list of entities
+     */
+    public List<ClientBasketItemDTO> findByIdClientBasket(String idClientBasket) {
+        log.debug("Request to get all ClientBasketItems");
+        List<ClientBasketItemDTO> result = clientBasketItemRepository.findByIdClientBasket(idClientBasket).stream()
             .map(clientBasketItemMapper::clientBasketItemToClientBasketItemDTO)
             .collect(Collectors.toCollection(LinkedList::new));
         return result;
@@ -69,7 +83,7 @@ public class ClientBasketItemService {
 
     /**
      *  Delete the  clientBasketItem by id.
-     *  
+     *
      *  @param id the id of the entity
      */
     public void delete(String id) {

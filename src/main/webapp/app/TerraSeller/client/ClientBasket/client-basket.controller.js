@@ -5,25 +5,44 @@
         .module('app.terraSeller')
         .controller('ClientBasketController', ClientBasketController);
 
-    ClientBasketController.$inject = ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService'];
+    ClientBasketController.$inject =
+        ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem', 'terraSellerStockService', 'ClientRoom'];
 
-    function ClientBasketController ($state, ClientBasket, Principal, terraSellerSettingsService) {
+    function ClientBasketController (
+        $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem, terraSellerStockService, ClientRoom) {
+
         var vm = this;
         vm.clientBaskets = [];
         vm.clientBasket = {};
+        vm.basketItems = {};
         vm.newBasket = {};
         vm.clientCode = "";
         vm.emplcode = "";
         vm.error = null;
         vm.success = null;
+        vm.selectedItem = null;         // продукт, на котором нажали кнопку Info
+        vm.stockData = [];              // Info по продукту - наличие на складах
+        vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
+        vm.basketSum = 0;
 
         vm.addNewBasket = addNewBasket;
         vm.isBasketActive = isBasketActive;
         vm.selectBasket = selectBasket;
+        vm.show2rowName = show2rowName;
+        vm.clickInfo = clickInfo;
+        vm.checkItemQty = checkItemQty;
+        vm.countBasketSum = countBasketSum;
+        vm.getTypeStr = getTypeStr;
 
         vm.loadByClient = function() {
             ClientBasket.query({client: vm.clientCode}, function(result) {
                 vm.clientBaskets = result;
+
+                if((vm.clientBaskets)&&(vm.clientBaskets.length > 0)) {
+                    vm.selectBasket(vm.clientBaskets[0]);
+                    vm.countBasketSum();
+                }
+
                 vm.error = null;
                 vm.success = null;
             });
@@ -34,6 +53,11 @@
                 if(settings.lastClientCode) {
                     vm.clientCode = settings.lastClientCode;
                     vm.emplcode = settings.emplcode;
+
+                    ClientRoom.query({client: vm.clientCode}, function(result) {
+                        vm.clientRooms = result;
+                    });
+
                     vm.loadByClient();
                 }
             });
@@ -53,7 +77,7 @@
         };
 
         function isBasketActive(basketID) {
-          return false;
+          return vm.clientBasket == basketID;
         };
 
         function addNewBasket() {
@@ -63,9 +87,78 @@
             vm.newBasket.info = "";
             ClientBasket.save(vm.newBasket, onSaveSuccess, onSaveError);
         };
-        
+
         function selectBasket(basket) {
             vm.clientBasket = basket;
+            ClientBasketItem.query({idbasket: basket.id}, function(result) {
+                vm.basketItems = result;
+                vm.countBasketSum();
+            });
+        };
+
+        function show2rowName (fullName) {
+            return fullName.split('|');
+        }
+
+        function clickInfo(item){
+            vm.selectedItem = item;
+            vm.stockData = [];
+            vm.stockHeader = ['','','','',''];
+
+            terraSellerStockService.get(vm.emplcode, item.code).then(function (stockInfo){
+                vm.stockData = stockInfo;
+
+                terraSellerStockService.getHeader(vm.emplcode).then(function (headerInfo){
+                    if(headerInfo) {
+                        vm.stockHeader = headerInfo.split(',');
+                    }
+                });
+            }),
+                function(err) {
+                    //
+                }
+        }
+
+        function countBasketSum(){
+            vm.basketSum = 0;
+
+            var qtyN = 0;
+
+            angular.forEach(vm.basketItems, function(item){
+                var qtyN = parseFloat(item.qty);
+
+                if(!qtyN){
+                    qtyN = 0;
+                };
+
+                vm.basketSum = vm.basketSum + qtyN*item.price;
+            });
+            vm.basketSum = vm.basketSum.toFixed(2);
+        };
+
+        function checkItemQty(item) {
+            var qty = "";
+
+            qty = item.qty.toString();
+            item.qty = qty.replace(",", ".");
+
+            var qtyN = parseFloat(item.qty);
+
+            if(!qtyN){
+                qtyN = 0;
+            };
+
+            var newItem = JSON.parse(JSON.stringify(item));
+
+            newItem.qty = qtyN;
+
+            countBasketSum();
+
+            ClientBasketItem.update(newItem);
+        };
+
+        function getTypeStr(item){
+            return ((!item.usetype)||(item.usetype == "")) ? "не опр" : item.usetype;
         };
     }
 })();

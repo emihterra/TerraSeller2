@@ -13,13 +13,6 @@
         </div>
     </div>
 
-
-    <p class="text-center text-muted" if-loading>
-        <span class="fa fa-spinner fa-spin fa-4x"></span>
-        <br /><br />
-        Загрузка данных, подождите...
-    </p>
-
     <div class="row" ng-show="vm.possibleCollections.length > 0" style="margin-top: 50px">
         <div class="col-xs-12 col-sm-6">
             <label class="control-label"><span style="color: black">Выберите коллекцию:</span></label>
@@ -92,7 +85,10 @@
                                         </button>
                                     </td>
                                     <td>{{item.tonQty}}</td>
-                                    <td>{{vm.show2rowName(item.name)[0]}}<br>{{vm.show2rowName(item.name)[1]}} , {{item.unit}}</td>
+                                    <td><span style="color: #0c7cd5">{{item.sidUser}}</span><br>
+                                        <span style="color: #019b15">{{vm.show2rowName(item.name)[0]}}</span><br>
+                                        {{vm.show2rowName(item.name)[1]}} , {{item.unit}}
+                                    </td>
                                     <!--<td>{{item.unit}}</td>-->
                                     <!--<td>{{item.price}} руб.</td>-->
                                     <!--<td>{{item.fizQty}}</td>-->
@@ -108,9 +104,16 @@
         </article>
     </div>
 
-    <a class="btn btn-primary" href-void style="margin-top: 10px;margin-bottom: 10px"
-       ng-class="{disabled:!vm.isChecked}" ng-show="vm.searchResult.length > 0">
-        <i class="fa fa-shopping-cart"></i> Добавить в корзину</a>
+    <div class="btn-group dropdown" data-dropdown ng-show="vm.searchResult.length > 0">
+        <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown" ng-class="{disabled:!vm.isChecked}">
+            <i class="fa fa-shopping-cart"></i> Добавить в корзину <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li ng-repeat="basket in vm.clientBaskets">
+                <a href="#/seller-search" ng-click="vm.sendToBasket(basket.id)">{{ basket.name }}</a>
+            </li>
+        </ul>
+    </div>
 
     <h2 class="row-seperator-header" ng-show="vm.piclinks.length > 0"><i class="glyphicon glyphicon-picture"></i> Интерьеры:</h2>
 
@@ -121,6 +124,12 @@
             </a>
         </div>
     </div>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
 
     </section>
 

@@ -9,9 +9,12 @@
         .module('app.terraSeller')
         .controller('terraSellerSearchController', terraSellerSearchController);
 
-    terraSellerSearchController.$inject = ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService', 'Principal'];
+    terraSellerSearchController.$inject =
+        ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService', 'Principal', 'ClientBasket', 'ClientBasketItem'];
 
-    function terraSellerSearchController ($window, $scope, terraSellerSearchService, terraSellerStockService, Principal) {
+    function terraSellerSearchController (
+        $window, $scope, terraSellerSearchService, terraSellerStockService, Principal, ClientBasket, ClientBasketItem) {
+
         var vm = this;
 
         vm.searchBox = '';              // модель поисковой строки
@@ -32,6 +35,7 @@
         vm.isChecked = false;           // есть выбранные продукты
         vm.employeeID = '';             // код продавца
         vm.employeeDimension = '';
+        vm.clientBaskets = [];          // список корзин
 
         vm.clickSearch = clickSearch;
         vm.show2rowName = show2rowName;
@@ -44,6 +48,7 @@
         vm.onKeyUp = onKeyUp;
         vm.checkAll = checkAll;
         vm.checkedStateChanged = checkedStateChanged;
+        vm.sendToBasket = sendToBasket;
 
         function clickSearch() {
             vm.searchResult = [];
@@ -88,6 +93,9 @@
         Principal.identity().then(function(account) {
             vm.employeeID = account.emplcode;
             vm.employeeDimension = account.dimension;
+            ClientBasket.query({client: account.lastClientCode}, function(result) {
+                vm.clientBaskets = result;
+            });
         });
 
         function clickInfo(item){
@@ -210,5 +218,32 @@
             }
         };
 
+        function sendToBasket (basketID) {
+
+            var basketItem = {};
+
+            angular.forEach(vm.searchResult, function (item) {
+                if (item.checked) {
+
+                    basketItem = {
+                        idClientBasket: basketID,
+                        code: item.sidUser,
+                        name: item.name,
+                        qty: 0,
+                        price: item.price,
+                        imglink: item.imgUrl,
+                        unit: item.unit,
+                        reserv: 0,
+                        part: "",
+                        combo: "",
+                        stock: "",
+                        useType: "",
+                        info: ""
+                    };
+
+                    ClientBasketItem.save(basketItem);
+                }
+            });
+        }
     }
 })();
