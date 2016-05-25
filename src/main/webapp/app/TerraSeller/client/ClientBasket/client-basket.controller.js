@@ -96,6 +96,11 @@
             vm.clientBasket = basket;
             ClientBasketItem.query({idbasket: basket.id}, function(result) {
                 vm.basketItems = result;
+
+                angular.forEach(vm.basketItems, function(item){
+                   item.infoJSON = angular.fromJson(item.info);
+                });
+
                 vm.countBasketSum();
             });
         };
@@ -165,23 +170,188 @@
             var retStr = "тип не опр";
 
             switch(item.useType) {
-                case "1": retStr = "тип: Светлая"; break;
-                case "2": retStr = "тип: Темная"; break;
-                case "3": retStr = "тип: Пол"; break;
-                case "4": retStr = "тип: Мозаика"; break;
-                case "5": retStr = "тип: Бордюр нижний"; break;
-                case "6": retStr = "тип: Бордюр верхний"; break;
-                case "7": retStr = "тип: Декор"; break;
+                case "1": retStr = "Светлая"; break;
+                case "2": retStr = "Темная"; break;
+                case "3": retStr = "Пол"; break;
+                case "4": retStr = "Мозаика"; break;
+                case "5": retStr = "Бордюр нижний"; break;
+                case "6": retStr = "Бордюр верхний"; break;
+                case "7": retStr = "Декор"; break;
                 default: retStr = "тип не опр"; break;
             };
 
             return retStr;
         };
 
+        function getSize(item) {
+            var itemWidth = 0;
+            var itemHeight = 0;
+            var tmpAr = [];
+            var tmpStr = "";
+
+            tmpAr = item.name.split('|');
+            if (tmpAr.length >= 2) {
+                tmpStr = tmpAr[1];
+                tmpAr = tmpStr.split('x');
+                if (tmpAr.length >= 2) {
+                    itemWidth = parseFloat(tmpAr[0]);
+                    if(!itemWidth){itemWidth = 0;};
+                    itemHeight = parseFloat(tmpAr[1]);
+                    if(!itemHeight){itemHeight = 0;};
+                };
+            };
+
+            return {width: itemWidth, height: itemHeight};
+        };
+
         function countByRoom(roomId){
+
+            var santechHeight = 0.9;
+            var itemWidth = 0;
+            var itemHeight = 0;
+            var tmpSize = {};
+            var darkRows = 0;
+            var darkItems = 0;
+            var darkItemsHeight = 0;
+            var darkSquare = 0;
+            var lightRows = 0;
+            var lightItems = 0;
+            var lightSquare = 0;
+            var roomPerimetr = 0;
+            var BottomBorderHeight = 0;
+            var TopBorderHeight = 0;
+            var newprice = 0;
 
             ClientRoom.get({id: roomId}, function(room){
                 if(room){
+
+                    vm.clientBasket.idClientRoom = room.name;
+                    ClientBasket.update(vm.clientBasket);
+
+                    roomPerimetr = (room.r_width + room.r_length)*2;
+
+                    angular.forEach(vm.basketItems, function(item) {
+                        if(item.useType == "5"){ // Бордюр нижний
+                            tmpSize = getSize(item);
+                            BottomBorderHeight = itmpSize.height;
+
+                            item.qtycalc = roomPerimetr/tmpSize.width;
+                            item.qtycalc = Math.round(item.qtycalc);
+                            newprice = item.price*item.qtycalc;
+                            newprice = newprice.toFixed(2);
+                            item.info = JSON.stringify({
+                                rows: 0,
+                                items: item.qtycalc,
+                                square: 0,
+                                newprice: newprice
+                            });
+                            item.infoJSON = angular.fromJson(item.info);
+                            ClientBasketItem.update(item);
+                        }
+                    });
+
+                    angular.forEach(vm.basketItems, function(item) {
+                        if(item.useType == "6"){ // Бордюр верхний
+                            tmpSize = getSize(item);
+                            BottomBorderHeight = itmpSize.height;
+
+                            item.qtycalc = roomPerimetr/tmpSize.width;
+                            item.qtycalc = Math.round(item.qtycalc);
+                            newprice = item.price*item.qtycalc;
+                            newprice = newprice.toFixed(2);
+                            item.info = JSON.stringify({
+                                rows: 0,
+                                items: item.qtycalc,
+                                square: 0,
+                                newprice: newprice
+                            });
+                            item.infoJSON = angular.fromJson(item.info);
+                            ClientBasketItem.update(item);
+                        }
+                    });
+
+                    itemWidth = 0;
+                    itemHeight = 0;
+                    angular.forEach(vm.basketItems, function(item){
+
+                        if(item.useType == "2"){ // Темная
+                            tmpSize = getSize(item);
+                            itemWidth = tmpSize.width;
+                            itemHeight = tmpSize.height;
+
+                            darkRows = santechHeight/itemHeight;
+                            darkRows = darkRows.toFixed(2);
+                            darkItems = (roomPerimetr/itemWidth)*darkRows;
+                            darkItems = darkItems.toFixed(2);
+                            darkSquare = darkItems*itemWidth*itemHeight;
+                            darkSquare = darkSquare.toFixed(2);
+                            darkItemsHeight = itemHeight*darkRows;
+                            item.qtycalc = darkSquare;
+                            newprice = item.price*item.qtycalc;
+                            newprice = newprice.toFixed(2);
+
+                            item.info = JSON.stringify({
+                                rows:darkRows,
+                                items: darkItems,
+                                square: darkSquare,
+                                newprice: newprice
+                            });
+                            item.infoJSON = angular.fromJson(item.info);
+
+                            ClientBasketItem.update(item);
+
+                        }
+                    });
+
+                    itemWidth = 0;
+                    itemHeight = 0;
+                    angular.forEach(vm.basketItems, function(item) {
+                        if(item.useType == "1"){ // Светлая
+                            tmpSize = getSize(item);
+                            itemWidth = tmpSize.width;
+                            itemHeight = tmpSize.height;
+
+                            lightRows = (room.r_height - darkItemsHeight - BottomBorderHeight - TopBorderHeight)/itemHeight;
+                            lightRows = lightRows.toFixed(2);
+                            lightItems = (roomPerimetr/itemWidth)*lightRows;
+                            lightItems = lightItems.toFixed(2);
+                            lightSquare = lightItems*itemWidth*itemHeight;
+                            lightSquare = lightSquare.toFixed(2);
+
+                            item.qtycalc = lightSquare;
+                            newprice = item.price*item.qtycalc;
+                            newprice = newprice.toFixed(2);
+
+                            item.info = JSON.stringify({
+                                rows: lightRows,
+                                items: lightItems,
+                                square: lightSquare,
+                                newprice: newprice
+                            });
+                            item.infoJSON = angular.fromJson(item.info);
+
+                            ClientBasketItem.update(item);
+                        }
+                    });
+
+                    angular.forEach(vm.basketItems, function(item) {
+                        if(item.useType == "3"){ // Пол
+                            item.qtycalc = room.r_width*room.r_length;
+                            item.qtycalc = item.qtycalc.toFixed(2);
+                            newprice = item.price*item.qtycalc;
+                            newprice = newprice.toFixed(2);
+
+                            item.info = JSON.stringify({
+                                rows: 0,
+                                items: 0,
+                                square: item.qtycalc,
+                                newprice: newprice
+                            });
+                            item.infoJSON = angular.fromJson(item.info);
+
+                            ClientBasketItem.update(item);
+                        }
+                    });
 
                 }
             });

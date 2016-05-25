@@ -88,20 +88,65 @@
                     </table>
                 </div>
 
-                <div class="btn-group dropdown" data-dropdown ng-show="vm.basketItems.length > 0" style="margin-top: 30px;margin-bottom: 30px">
-                    <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" ng-class="{disabled:vm.isChecked}">
-                        <i class="fa fa-usd"></i> Рассчитать для помещения <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li ng-repeat="room in vm.clientRooms">
-                            <a href="#/client-basket" ng-click="vm.countByRoom(room.id)">{{ room.name }}</a>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
         </div>
     </div>
+
+
+    <div class="btn-group dropdown" data-dropdown ng-show="vm.basketItems.length > 0">
+        <button class="btn btn-success dropdown-toggle" data-toggle="dropdown" ng-class="{disabled:vm.isChecked}">
+            <i class="fa fa-usd"></i> Рассчитать для помещения <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li ng-repeat="room in vm.clientRooms">
+                <a href="#/client-basket" ng-click="vm.countByRoom(room.id)">{{ room.name }}</a>
+            </li>
+        </ul>
+    </div>
+
+    <section widget-grid id="widget-grid">
+        <div class="row" ng-show="vm.clientBasket.idClientRoom != ''" style="margin-top: 50px">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div jarvis-widget id="condenced-table-widget1"
+                         data-widget-fullscreenbutton="false"
+                         data-widget-editbutton="false" data-widget-color="blueDark"
+                         data-widget-togglebutton="false" data-widget-deletebutton="false"
+                         data-widget-colorbutton="false">
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                        <h2>Расчет для помещения "{{vm.clientBasket.idClientRoom}}"</h2>
+                    </header>
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                    <thead>
+                                    <tr>
+                                        <th style="vertical-align: middle">Вид</th>
+                                        <th style="vertical-align: middle;width: 20px">Рядов</th>
+                                        <th style="vertical-align: middle">Штук</th>
+                                        <th style="vertical-align: middle">Кв.м</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="item in vm.basketItems">
+                                        <td>{{vm.getTypeStr(item)}}</td>
+                                        <td>{{item.infoJSON.rows}}</td>
+                                        <td>{{item.infoJSON.items}}</td>
+                                        <td>{{item.infoJSON.square}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
 
     <p class="text-center text-muted" if-loading>
         <span class="fa fa-spinner fa-spin fa-4x"></span>
