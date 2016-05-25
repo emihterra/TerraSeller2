@@ -22,6 +22,8 @@ public class ClientBasketItemDTO implements Serializable {
 
     private Double qty;
 
+    private Double qtycalc;
+
 
     private Double price;
 
@@ -149,6 +151,14 @@ public class ClientBasketItemDTO implements Serializable {
         this.info = info;
     }
 
+    public Double getQtycalc() {
+        return qtycalc;
+    }
+
+    public void setQtycalc(Double qtycalc) {
+        this.qtycalc = qtycalc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -178,6 +188,7 @@ public class ClientBasketItemDTO implements Serializable {
             ", code='" + code + "'" +
             ", name='" + name + "'" +
             ", qty='" + qty + "'" +
+            ", qtycalc='" + qtycalc + "'" +
             ", price='" + price + "'" +
             ", imglink='" + imglink + "'" +
             ", unit='" + unit + "'" +

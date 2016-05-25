@@ -31,6 +31,9 @@ public class ClientBasketItem implements Serializable {
     @Field("qty")
     private Double qty;
 
+    @Field("qtycalc")
+    private Double qtycalc;
+
     @Field("price")
     private Double price;
 
@@ -170,6 +173,14 @@ public class ClientBasketItem implements Serializable {
         this.info = info;
     }
 
+    public Double getQtycalc() {
+        return qtycalc;
+    }
+
+    public void setQtycalc(Double qtycalc) {
+        this.qtycalc = qtycalc;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -198,6 +209,7 @@ public class ClientBasketItem implements Serializable {
             ", code='" + code + "'" +
             ", name='" + name + "'" +
             ", qty='" + qty + "'" +
+            ", qtycalc='" + qtycalc + "'" +
             ", price='" + price + "'" +
             ", imglink='" + imglink + "'" +
             ", unit='" + unit + "'" +

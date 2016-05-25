@@ -24,6 +24,7 @@
         vm.stockData = [];              // Info по продукту - наличие на складах
         vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
         vm.basketSum = 0;
+        vm.selectedItemType = {};
 
         vm.addNewBasket = addNewBasket;
         vm.isBasketActive = isBasketActive;
@@ -33,6 +34,9 @@
         vm.checkItemQty = checkItemQty;
         vm.countBasketSum = countBasketSum;
         vm.getTypeStr = getTypeStr;
+        vm.countByRoom = countByRoom;
+        vm.cancelUseType = cancelUseType;
+        vm.applyUseType = applyUseType;
 
         vm.loadByClient = function() {
             ClientBasket.query({client: vm.clientCode}, function(result) {
@@ -158,7 +162,37 @@
         };
 
         function getTypeStr(item){
-            return ((!item.usetype)||(item.usetype == "")) ? "не опр" : item.usetype;
+            var retStr = "тип не опр";
+
+            switch(item.useType) {
+                case "1": retStr = "тип: Светлая"; break;
+                case "2": retStr = "тип: Темная"; break;
+                case "3": retStr = "тип: Пол"; break;
+                case "4": retStr = "тип: Мозаика"; break;
+                case "5": retStr = "тип: Бордюр нижний"; break;
+                case "6": retStr = "тип: Бордюр верхний"; break;
+                case "7": retStr = "тип: Декор"; break;
+                default: retStr = "тип не опр"; break;
+            };
+
+            return retStr;
+        };
+
+        function countByRoom(roomId){
+
+            ClientRoom.get({id: roomId}, function(room){
+                if(room){
+
+                }
+            });
+        };
+
+        function cancelUseType(){
+            vm.selectedItemType = {};
+        };
+
+        function applyUseType() {
+            ClientBasketItem.update(vm.selectedItemType);
         };
     }
 })();
