@@ -25,6 +25,7 @@ public class ClientBasketDTO implements Serializable {
 
     private String info;
 
+    private Boolean deleted;
 
     public String getId() {
         return id;
@@ -69,6 +70,14 @@ public class ClientBasketDTO implements Serializable {
         this.info = info;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -98,6 +107,7 @@ public class ClientBasketDTO implements Serializable {
             ", name='" + name + "'" +
             ", emplcode='" + emplcode + "'" +
             ", idClientRoom='" + idClientRoom + "'" +
+            ", deleted='" + deleted + "'" +
             ", info='" + info + "'" +
             '}';
     }

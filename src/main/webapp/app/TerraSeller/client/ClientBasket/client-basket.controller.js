@@ -25,6 +25,7 @@
         vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
         vm.basketSum = 0;
         vm.selectedItemType = {};
+        vm.calcSum = 0;
 
         vm.addNewBasket = addNewBasket;
         vm.isBasketActive = isBasketActive;
@@ -37,9 +38,11 @@
         vm.countByRoom = countByRoom;
         vm.cancelUseType = cancelUseType;
         vm.applyUseType = applyUseType;
+        vm.cancelDelBasket = cancelDelBasket;
+        vm.delBasket = delBasket;
 
         vm.loadByClient = function() {
-            ClientBasket.query({client: vm.clientCode}, function(result) {
+            ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
                 vm.clientBaskets = result;
 
                 if((vm.clientBaskets)&&(vm.clientBaskets.length > 0)) {
@@ -87,6 +90,7 @@
         function addNewBasket() {
             vm.newBasket.client = vm.clientCode;
             vm.newBasket.emplcode = vm.emplcode;
+            vm.newBasket.deleted = false;
             vm.newBasket.idClientRoom = "";
             vm.newBasket.info = "";
             ClientBasket.save(vm.newBasket, onSaveSuccess, onSaveError);
@@ -98,7 +102,9 @@
                 vm.basketItems = result;
 
                 angular.forEach(vm.basketItems, function(item){
-                   item.infoJSON = angular.fromJson(item.info);
+                   if(item.info) {
+                       item.infoJSON = angular.fromJson(item.info);
+                   }
                 });
 
                 vm.countBasketSum();
@@ -143,6 +149,7 @@
                 vm.basketSum = vm.basketSum + qtyN*item.price;
             });
             vm.basketSum = vm.basketSum.toFixed(2);
+            vm.updateCalcSum();
         };
 
         function checkItemQty(item) {
@@ -204,6 +211,17 @@
             return {width: itemWidth, height: itemHeight};
         };
 
+        vm.updateCalcSum = function() {
+            vm.calcSum = 0;
+            var tmpPrice = 0;
+            angular.forEach(vm.basketItems, function (item) {
+                if ((item.infoJSON) && (item.infoJSON.newprice)) {
+                    tmpPrice = tmpPrice + parseFloat(item.infoJSON.newprice);
+                }
+            });
+            vm.calcSum = tmpPrice.toFixed(2);
+        }
+
         function countByRoom(roomId){
 
             var santechHeight = 0.9;
@@ -229,6 +247,16 @@
                     ClientBasket.update(vm.clientBasket);
 
                     roomPerimetr = (room.r_width + room.r_length)*2;
+
+                    angular.forEach(vm.basketItems, function(item) {
+                        item.info = "";
+                        item.infoJSON = {
+                            rows: 0,
+                            items: 0,
+                            square: 0,
+                            newprice: 0
+                        };
+                    });
 
                     angular.forEach(vm.basketItems, function(item) {
                         if(item.useType == "5"){ // Бордюр нижний
@@ -283,7 +311,7 @@
                             darkRows = darkRows.toFixed(2);
                             darkItems = (roomPerimetr/itemWidth)*darkRows;
                             darkItems = darkItems.toFixed(2);
-                            darkSquare = darkItems*itemWidth*itemHeight;
+                            darkSquare = darkItems*itemWidth*itemHeight/10000;
                             darkSquare = darkSquare.toFixed(2);
                             darkItemsHeight = itemHeight*darkRows;
                             item.qtycalc = darkSquare;
@@ -315,7 +343,7 @@
                             lightRows = lightRows.toFixed(2);
                             lightItems = (roomPerimetr/itemWidth)*lightRows;
                             lightItems = lightItems.toFixed(2);
-                            lightSquare = lightItems*itemWidth*itemHeight;
+                            lightSquare = lightItems*itemWidth*itemHeight/10000;
                             lightSquare = lightSquare.toFixed(2);
 
                             item.qtycalc = lightSquare;
@@ -336,7 +364,7 @@
 
                     angular.forEach(vm.basketItems, function(item) {
                         if(item.useType == "3"){ // Пол
-                            item.qtycalc = room.r_width*room.r_length;
+                            item.qtycalc = room.r_width*room.r_length/10000;
                             item.qtycalc = item.qtycalc.toFixed(2);
                             newprice = item.price*item.qtycalc;
                             newprice = newprice.toFixed(2);
@@ -353,6 +381,7 @@
                         }
                     });
 
+                    vm.updateCalcSum();
                 }
             });
         };
@@ -364,5 +393,25 @@
         function applyUseType() {
             ClientBasketItem.update(vm.selectedItemType);
         };
+
+        function cancelDelBasket() {
+            vm.clientBasket.deleted = false;
+            vm.clientBasket.infoJSON.delReason = 0;
+            vm.clientBasket.infoJSON.delCustom = "";
+        };
+
+        function delBasket() {
+            vm.clientBasket.deleted = true;
+            vm.clientBasket.info = JSON.stringify(vm.clientBasket.infoJSON);
+            ClientBasket.update(vm.clientBasket, function(){
+                vm.clientBasket = {};
+                vm.basketItems = {};
+                vm.basketSum = 0;
+                vm.selectedItemType = {};
+                vm.calcSum = 0;
+                vm.loadByClient();
+            });
+        };
+
     }
 })();

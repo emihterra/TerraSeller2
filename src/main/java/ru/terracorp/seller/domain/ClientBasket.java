@@ -34,6 +34,9 @@ public class ClientBasket implements Serializable {
     @Field("info")
     private String info;
 
+    @Field("deleted")
+    private Boolean deleted;
+
     public String getId() {
         return id;
     }
@@ -82,6 +85,14 @@ public class ClientBasket implements Serializable {
         this.info = info;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -110,6 +121,7 @@ public class ClientBasket implements Serializable {
             ", name='" + name + "'" +
             ", emplcode='" + emplcode + "'" +
             ", idClientRoom='" + idClientRoom + "'" +
+            ", deleted='" + deleted + "'" +
             ", info='" + info + "'" +
             '}';
     }

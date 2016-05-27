@@ -10,10 +10,12 @@
         .controller('terraSellerSearchController', terraSellerSearchController);
 
     terraSellerSearchController.$inject =
-        ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService', 'Principal', 'ClientBasket', 'ClientBasketItem'];
+        ['$window', '$scope', 'terraSellerSearchService', 'terraSellerStockService', 'Principal', 'ClientBasket',
+            'ClientBasketItem', 'terraSellerSettingsService'];
 
     function terraSellerSearchController (
-        $window, $scope, terraSellerSearchService, terraSellerStockService, Principal, ClientBasket, ClientBasketItem) {
+        $window, $scope, terraSellerSearchService, terraSellerStockService, Principal, ClientBasket,
+            ClientBasketItem, terraSellerSettingsService) {
 
         var vm = this;
 
@@ -91,10 +93,16 @@
         }
 
         Principal.identity().then(function(account) {
-            vm.employeeID = account.emplcode;
-            vm.employeeDimension = account.dimension;
-            ClientBasket.query({client: account.lastClientCode}, function(result) {
-                vm.clientBaskets = result;
+            terraSellerSettingsService.get(account.login).then(function(settings){
+                if(settings.lastClientCode) {
+                    vm.clientCode = settings.lastClientCode;
+                    vm.employeeID = settings.emplcode;
+                    vm.employeeDimension = settings.dimension;
+
+                    ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
+                        vm.clientBaskets = result;
+                    });
+                }
             });
         });
 

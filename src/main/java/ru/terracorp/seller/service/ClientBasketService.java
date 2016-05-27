@@ -20,16 +20,16 @@ import java.util.stream.Collectors;
 public class ClientBasketService {
 
     private final Logger log = LoggerFactory.getLogger(ClientBasketService.class);
-    
+
     @Inject
     private ClientBasketRepository clientBasketRepository;
-    
+
     @Inject
     private ClientBasketMapper clientBasketMapper;
-    
+
     /**
      * Save a clientBasket.
-     * 
+     *
      * @param clientBasketDTO the entity to save
      * @return the persisted entity
      */
@@ -43,12 +43,25 @@ public class ClientBasketService {
 
     /**
      *  Get all the clientBaskets.
-     *  
+     *
      *  @return the list of entities
      */
     public List<ClientBasketDTO> findAll() {
         log.debug("Request to get all ClientBaskets");
         List<ClientBasketDTO> result = clientBasketRepository.findAll().stream()
+            .map(clientBasketMapper::clientBasketToClientBasketDTO)
+            .collect(Collectors.toCollection(LinkedList::new));
+        return result;
+    }
+
+    /**
+     *  Get all the ClientBasket by client.
+     *
+     *  @return the list of entities
+     */
+    public List<ClientBasketDTO> findByClientAndDeleted(String client, Boolean deleted) {
+        log.debug("Request to get all ClientBaskets");
+        List<ClientBasketDTO> result = clientBasketRepository.findByClientAndDeleted(client, deleted).stream()
             .map(clientBasketMapper::clientBasketToClientBasketDTO)
             .collect(Collectors.toCollection(LinkedList::new));
         return result;
@@ -69,7 +82,7 @@ public class ClientBasketService {
 
     /**
      *  Delete the  clientBasket by id.
-     *  
+     *
      *  @param id the id of the entity
      */
     public void delete(String id) {

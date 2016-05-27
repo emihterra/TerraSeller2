@@ -90,9 +90,17 @@ public class ClientBasketResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Transactional(readOnly = true)
-    public List<ClientBasketDTO> getAllClientBaskets() {
-        log.debug("REST request to get all ClientBaskets");
-        return clientBasketService.findAll();
+    public List<ClientBasketDTO> getAllClientBaskets(
+        @RequestParam(name = "client", required = false, defaultValue = "") String client,
+        @RequestParam(name = "deleted", required = false, defaultValue = "false") Boolean deleted
+    ) {
+        if(client.isEmpty()) {
+            log.debug("REST request to get all ClientBaskets");
+            return clientBasketService.findAll();
+        } else {
+            log.debug("REST request to get all ClientBaskets by client");
+            return clientBasketService.findByClientAndDeleted(client, deleted);
+        }
     }
 
     /**

@@ -6,10 +6,14 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-4 no-padding-left">
+            <div>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#newBasket" >
                     <span class="glyphicon glyphicon-plus"></span>
                     Создать корзину
+                </button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#delBasket" >
+                    <span class="glyphicon glyphicon-minus"></span>
+                    Удалить
                 </button>
             </div>
         </div>
@@ -28,7 +32,7 @@
         <strong>Произошла ошибка!</strong> Корзина не добавлена.
     </div>
 
-    <div class="jarviswidget well" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false">
+    <div ng-show="vm.clientBaskets&&(vm.clientBaskets.length > 0)" class="jarviswidget well" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" data-widget-fullscreenbutton="false" data-widget-custombutton="false" data-widget-sortable="false">
         <div class="widget-body">
             <p></p>
 
@@ -59,7 +63,10 @@
                                        ng-model="item.qty"
                                        ng-keyup="item.recounted = false;vm.checkItemQty(item);"
                                        style="width: 80px; height: 30px;text-align: center"
-                                       onClick="this.select();"/>
+                                       onClick="this.select();"/><br>
+                                <button class="btn btn-success" style="margin-top: 10px;margin-bottom: 5px">
+                                     В заказ
+                                </button>
                             </td>
                             <td width="50px">
                                 <div style="width: 50px;height: 50px; overflow: hidden">
@@ -105,7 +112,7 @@
     </div>
 
     <section widget-grid id="widget-grid">
-        <div class="row" ng-show="vm.clientBasket.idClientRoom != ''" style="margin-top: 50px">
+        <div class="row" ng-show="vm.clientBasket.idClientRoom&&(vm.clientBasket.idClientRoom != '')" style="margin-top: 30px">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div jarvis-widget id="condenced-table-widget1"
                          data-widget-fullscreenbutton="false"
@@ -114,7 +121,7 @@
                          data-widget-colorbutton="false">
                     <header>
                         <span class="widget-icon"> <i class="fa fa-table"></i> </span>
-                        <h2>Расчет для помещения "{{vm.clientBasket.idClientRoom}}"</h2>
+                        <h2><span class="hidden-xs">Расчет для помещения </span>"{{vm.clientBasket.idClientRoom}}"</h2>
                     </header>
                     <div>
                         <div class="widget-body no-padding">
@@ -127,6 +134,7 @@
                                         <th style="vertical-align: middle;width: 20px">Рядов</th>
                                         <th style="vertical-align: middle">Штук</th>
                                         <th style="vertical-align: middle">Кв.м</th>
+                                        <th style="vertical-align: middle">Цена</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -135,6 +143,10 @@
                                         <td>{{item.infoJSON.rows}}</td>
                                         <td>{{item.infoJSON.items}}</td>
                                         <td>{{item.infoJSON.square}}</td>
+                                        <td>{{item.infoJSON.newprice}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">Итого: {{ vm.calcSum }} руб.</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -178,6 +190,44 @@
                 </button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.addNewBasket()">
                     Добавить
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="delBasket" tabindex="-1" role="dialog" aria-labelledby="delBasketLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="delBasketLabel">Удаление корзины "{{vm.clientBasket.name}}"</h4>
+            </div>
+            <div class="modal-body">
+                <label class="control-label" for="field_reason">Причина удаления</label>
+                <select class="form-control" name="name" id="field_reason" ng-model="vm.clientBasket.infoJSON.delReason">
+                    <option value="0">Тестирование</option>
+                    <option value="1">Нет в наличии</option>
+                    <option value="2">Клиент выбрал другую коллекцию</option>
+                    <option value="3">Долго оформляли заказ</option>
+                    <option value="4">Дорого</option>
+                    <option value="5">Другое...</option>
+                </select><br>
+
+                <div ng-show="vm.clientBasket.infoJSON.delReason==5">
+                    <label class="control-label" for="field_custom">Укажите причину</label><br>
+                    <textarea rows="3" class="form-control" id="field_custom" ng-model="vm.clientBasket.infoJSON.delCustom"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.cancelDelBasket()">
+                    Отмена
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.delBasket()">
+                    Удалить
                 </button>
             </div>
         </div><!-- /.modal-content -->
