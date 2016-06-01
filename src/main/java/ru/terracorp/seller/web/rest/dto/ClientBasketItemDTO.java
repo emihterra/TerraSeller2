@@ -48,6 +48,7 @@ public class ClientBasketItemDTO implements Serializable {
 
     private String useType;
 
+    private String itemsize;
 
     private String info;
 
@@ -159,6 +160,14 @@ public class ClientBasketItemDTO implements Serializable {
         this.qtycalc = qtycalc;
     }
 
+    public String getItemsize() {
+        return itemsize;
+    }
+
+    public void setItemsize(String itemsize) {
+        this.itemsize = itemsize;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -197,6 +206,7 @@ public class ClientBasketItemDTO implements Serializable {
             ", combo='" + combo + "'" +
             ", stock='" + stock + "'" +
             ", useType='" + useType + "'" +
+            ", itemsize='" + itemsize + "'" +
             ", info='" + info + "'" +
             '}';
     }

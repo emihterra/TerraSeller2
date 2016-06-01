@@ -241,6 +241,7 @@
                         price: item.price,
                         imglink: item.imgUrl,
                         unit: item.unit,
+                        itemsize: item.itemsize,
                         reserv: 0,
                         part: "",
                         combo: "",

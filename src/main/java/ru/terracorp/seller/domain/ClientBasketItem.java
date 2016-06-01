@@ -58,6 +58,9 @@ public class ClientBasketItem implements Serializable {
     @Field("use_type")
     private String useType;
 
+    @Field("itemsize")
+    private String itemsize;
+
     @Field("info")
     private String info;
 
@@ -181,6 +184,14 @@ public class ClientBasketItem implements Serializable {
         this.qtycalc = qtycalc;
     }
 
+    public String getItemsize() {
+        return itemsize;
+    }
+
+    public void setItemsize(String itemsize) {
+        this.itemsize = itemsize;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -218,6 +229,7 @@ public class ClientBasketItem implements Serializable {
             ", combo='" + combo + "'" +
             ", stock='" + stock + "'" +
             ", useType='" + useType + "'" +
+            ", itemsize='" + itemsize + "'" +
             ", info='" + info + "'" +
             '}';
     }

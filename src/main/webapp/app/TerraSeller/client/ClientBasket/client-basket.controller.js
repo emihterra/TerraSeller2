@@ -193,20 +193,25 @@
         function getSize(item) {
             var itemWidth = 0;
             var itemHeight = 0;
-            var tmpAr = [];
-            var tmpStr = "";
 
-            tmpAr = item.name.split('|');
-            if (tmpAr.length >= 2) {
-                tmpStr = tmpAr[1];
-                tmpAr = tmpStr.split('x');
+            if (item.itemsize) {
+                var tmpAr = [];
+
+                tmpAr = item.itemsize.split('x');
                 if (tmpAr.length >= 2) {
                     itemWidth = parseFloat(tmpAr[0]);
-                    if(!itemWidth){itemWidth = 0;};
+                    if (!itemWidth) {
+                        itemWidth = 0;
+                    }
+                    ;
                     itemHeight = parseFloat(tmpAr[1]);
-                    if(!itemHeight){itemHeight = 0;};
-                };
-            };
+                    if (!itemHeight) {
+                        itemHeight = 0;
+                    }
+                    ;
+                }
+                ;
+            }
 
             return {width: itemWidth, height: itemHeight};
         };

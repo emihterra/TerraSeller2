@@ -47,6 +47,7 @@
                         tonQty: item.tonQty,
                         itemCollectionID: item.itemCollectionID,
                         itemProducerID: item.itemProducerID,
+                        itemsize: item.itemsize.trim(),
                         checked: false
                     });
                 });
