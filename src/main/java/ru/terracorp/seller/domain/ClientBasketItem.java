@@ -61,6 +61,9 @@ public class ClientBasketItem implements Serializable {
     @Field("itemsize")
     private String itemsize;
 
+    @Field("ordered")
+    private Boolean ordered;
+
     @Field("info")
     private String info;
 
@@ -192,6 +195,14 @@ public class ClientBasketItem implements Serializable {
         this.itemsize = itemsize;
     }
 
+    public Boolean getOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(Boolean ordered) {
+        this.ordered = ordered;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -230,6 +241,7 @@ public class ClientBasketItem implements Serializable {
             ", stock='" + stock + "'" +
             ", useType='" + useType + "'" +
             ", itemsize='" + itemsize + "'" +
+            ", ordered='" + ordered + "'" +
             ", info='" + info + "'" +
             '}';
     }

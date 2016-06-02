@@ -135,7 +135,22 @@
                         controllerAs: 'vm'
                     }
                 }
+            })
+
+            .state('app.terraSeller.client-order', {
+                url: '/client-order',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Заказ',
+                    title: 'Заказ'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/client/ClientBasket/client-order.html',
+                        controller: 'ClientOrderController',
+                        controllerAs: 'vm'
+                    }
+                }
             });
-        
     }
 })();

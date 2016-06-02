@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface ClientBasketItemRepository extends MongoRepository<ClientBasketItem,String> {
     List<ClientBasketItem> findByIdClientBasket(String idClientBasket);
+    List<ClientBasketItem> findByOrdered(Boolean ordered);
+    List<ClientBasketItem> findByIdClientBasketAndOrdered(String idClientBasket, Boolean ordered);
 }

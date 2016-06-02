@@ -1,0 +1,187 @@
+<div id="content">
+
+    <div class="row">
+        <big-breadcrumbs items="['Заказ']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <section widget-grid id="widget-grid">
+        <div class="row" ng-show="true" style="margin-top: 30px">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div jarvis-widget id="condenced-table-widget1"
+                     data-widget-fullscreenbutton="false"
+                     data-widget-editbutton="false" data-widget-color="blueDark"
+                     data-widget-togglebutton="false" data-widget-deletebutton="false"
+                     data-widget-colorbutton="false">
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                        <h2>Заказ клиента</h2>
+                    </header>
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                    <thead>
+                                    <tr>
+                                        <th style="vertical-align: middle">Количество</th>
+                                        <th style="vertical-align: middle">Картинка</th>
+                                        <th style="vertical-align: middle;width: 20px">Инфо</th>
+                                        <th style="vertical-align: middle">Название</th>
+                                        <th style="vertical-align: middle">Цена</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="item in vm.orderItems">
+                                        <td>
+                                            <input type="text"
+                                                   min="0"
+                                                   ng-model="item.qty"
+                                                   ng-keyup="item.recounted = false;vm.checkItemQty(item);"
+                                                   style="width: 80px; height: 30px;text-align: center"
+                                                   onClick="this.select();"/><br>
+                                            <div class="onoffswitch-container">
+                                    <span class="onoffswitch">
+                                        <input type="checkbox" class="onoffswitch-checkbox" id="inline_{{item.id}}" ng-model="item.checked">
+                                        <label class="onoffswitch-label" for="inline_{{item.id}}" ng-click="toggleInline()">
+                                            <span class="onoffswitch-inner" data-swchon-text="ДА" data-swchoff-text="НЕТ"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </span>
+                                            </div>
+                                        </td>
+                                        <td width="50px">
+                                            <div style="width: 50px;height: 50px; overflow: hidden">
+                                                <a data-toggle="modal" data-target="#productImgModal">
+                                                    <img ng-click="vm.selectedImgTitle=item.name;vm.selectedImgUrl=item.imglink" ng-src="{{item.imglink}}" style="height: 50px">
+                                                </a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#productInfoModal" ng-click="vm.clickInfo(item)">
+                                                <span class="glyphicon glyphicon-question-sign"></span>
+                                            </button>
+                                        </td>
+                                        <td><span style="color: #0c7cd5">{{item.code}} - <a ng-click="vm.selectedItemType=item" data-toggle="modal" data-target="#productUseTypeModal">{{ vm.getTypeStr(item) }}</a></span><br>
+                                            <span style="color: #019b15">{{vm.show2rowName(item.name)[0]}}</span><br>
+                                            {{vm.show2rowName(item.name)[1]}} , {{item.unit}}
+                                        </td>
+                                        <td>
+                                            {{ item.price }} руб.
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6">Итого: {{ vm.basketSum }} руб.</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="productImgModal" tabindex="-1" role="dialog" aria-labelledby="productImgLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="productImgLabel">{{vm.selectedImgTitle}}</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <center><img ng-src="{{vm.selectedImgUrl}}" style="width: 100%; height: 100%; max-width: 800px; max-height: 600px"></center>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Закрыть
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="productInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">{{vm.selectedItem.code}} - {{vm.selectedItem.name}}</h4>
+                Износостойкость: {{vm.selectedItem.iznos}} , Цвет: {{vm.selectedItem.color}}
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="prodInfoTable" class="table table-bordered table-condensed table-hover">
+                            <tbody style=background:white>
+                            <tr>
+                                <th colspan="3">
+                                    <div>
+                                        <span style="color: black;">Физ. доступно:</span> <span style="color: red;">{{ vm.stockHeader[0] }}</span>
+                                        <span style="color: black;">Полный остаток:</span> <span style="color: red;">{{ vm.stockHeader[1] }}</span>
+                                        <span style="color: black;">Резерв:</span> <span style="color: red;">{{ vm.stockHeader[2] }}</span>
+                                        <span style="color: black;">В пути:</span> <span style="color: red;">{{ vm.stockHeader[3] }}</span>
+                                        <span style="color: black;">В заказах:</span> <span style="color: red;">{{ vm.stockHeader[4] }}</span>
+                                    </div>
+
+                                </th>
+                            </tr>
+
+                            <tr>
+                                <th><span style="color:black">Склад</span></th>
+                                <th><span style="color:black">Аналитика</span></th>
+                                <th><span style="color:black">Физ.дост.</span></th>
+                            </tr>
+
+                            <tr ng-repeat="item in vm.stockData | orderBy:['+stock','-age']">
+                                <td>
+                                    {{item.stock}}
+                                </td>
+
+                                <td>
+                                    {{item.analitics}}
+                                </td>
+
+                                <td>
+                                    {{item.age}}
+                                </td>
+
+                            </tr>
+
+                            <tfoot>
+                            </tfoot>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Закрыть
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

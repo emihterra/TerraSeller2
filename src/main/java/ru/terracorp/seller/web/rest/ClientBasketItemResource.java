@@ -90,13 +90,23 @@ public class ClientBasketItemResource {
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
     @Transactional(readOnly = true)
-    public List<ClientBasketItemDTO> getAllClientBasketItems(@RequestParam(name = "idbasket", required = false, defaultValue = "") String idbasket) {
+    public List<ClientBasketItemDTO> getAllClientBasketItems(
+        @RequestParam(name = "idbasket", required = false, defaultValue = "") String idbasket,
+        @RequestParam(name = "orderedOnly", required = false, defaultValue = "false") Boolean orderedOnly) {
+
         if (idbasket.isEmpty()) {
-            log.debug("REST request to get all ClientBasketItems");
-            return clientBasketItemService.findAll();
+
+            if(orderedOnly) {
+                log.debug("REST request to get all ClientBasketItems");
+                return clientBasketItemService.findByOrdered(true);
+            } else {
+                log.debug("REST request to get all ClientBasketItems");
+                return clientBasketItemService.findAll();
+            }
+
         } else {
             log.debug("REST request to get all ClientBasketItems");
-            return clientBasketItemService.findByIdClientBasket(idbasket);
+            return clientBasketItemService.findByIdClientBasket(idbasket, orderedOnly);
         }
     }
 

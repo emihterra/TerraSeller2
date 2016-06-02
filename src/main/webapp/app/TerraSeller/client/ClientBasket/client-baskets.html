@@ -64,9 +64,15 @@
                                        ng-keyup="item.recounted = false;vm.checkItemQty(item);"
                                        style="width: 80px; height: 30px;text-align: center"
                                        onClick="this.select();"/><br>
-                                <button class="btn btn-success" style="margin-top: 10px;margin-bottom: 5px">
-                                     В заказ
-                                </button>
+                                <div class="onoffswitch-container">
+                                    <span class="onoffswitch">
+                                        <input type="checkbox" class="onoffswitch-checkbox" id="inline_{{item.id}}" ng-model="item.ordered" ng-click="vm.itemOrderedChange(item)">
+                                        <label class="onoffswitch-label" for="inline_{{item.id}}" ng-click="toggleInline()">
+                                            <span class="onoffswitch-inner" data-swchon-text="ДА" data-swchoff-text="НЕТ"></span>
+                                            <span class="onoffswitch-switch"></span>
+                                        </label>
+                                    </span>
+                                </div>
                             </td>
                             <td width="50px">
                                 <div style="width: 50px;height: 50px; overflow: hidden">

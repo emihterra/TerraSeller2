@@ -247,6 +247,7 @@
                         combo: "",
                         stock: "",
                         useType: "",
+                        ordered: false,
                         info: ""
                     };
 

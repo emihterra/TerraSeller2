@@ -50,6 +50,8 @@ public class ClientBasketItemDTO implements Serializable {
 
     private String itemsize;
 
+    private Boolean ordered;
+
     private String info;
 
 
@@ -168,6 +170,14 @@ public class ClientBasketItemDTO implements Serializable {
         this.itemsize = itemsize;
     }
 
+    public Boolean getOrdered() {
+        return ordered;
+    }
+
+    public void setOrdered(Boolean ordered) {
+        this.ordered = ordered;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -207,6 +217,7 @@ public class ClientBasketItemDTO implements Serializable {
             ", stock='" + stock + "'" +
             ", useType='" + useType + "'" +
             ", itemsize='" + itemsize + "'" +
+            ", ordered='" + ordered + "'" +
             ", info='" + info + "'" +
             '}';
     }

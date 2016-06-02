@@ -58,11 +58,36 @@ public class ClientBasketItemService {
      *  Get the clientBasketItems by Basket ID.
      *
      *  @param idClientBasket the id of the Client Basket
+     *  @param orderedOnly ordered items only (which are in the final basket)
      *  @return the list of entities
      */
-    public List<ClientBasketItemDTO> findByIdClientBasket(String idClientBasket) {
-        log.debug("Request to get all ClientBasketItems");
-        List<ClientBasketItemDTO> result = clientBasketItemRepository.findByIdClientBasket(idClientBasket).stream()
+    public List<ClientBasketItemDTO> findByIdClientBasket(String idClientBasket, Boolean orderedOnly) {
+        log.debug("Request to get all ClientBasketItems by Basket ID");
+
+        List<ClientBasketItemDTO> result;
+
+        if(orderedOnly) {
+            result = clientBasketItemRepository.findByIdClientBasketAndOrdered(idClientBasket, orderedOnly).stream()
+                .map(clientBasketItemMapper::clientBasketItemToClientBasketItemDTO)
+                .collect(Collectors.toCollection(LinkedList::new));
+        } else {
+            result = clientBasketItemRepository.findByIdClientBasket(idClientBasket).stream()
+                .map(clientBasketItemMapper::clientBasketItemToClientBasketItemDTO)
+                .collect(Collectors.toCollection(LinkedList::new));
+        }
+
+        return result;
+    }
+
+    /**
+     *  Get ordered clientBasketItems (which are in the final basket).
+     *
+     *  @param ordered the id of the Client Basket
+     *  @return the list of entities
+     */
+    public List<ClientBasketItemDTO> findByOrdered(Boolean ordered) {
+        log.debug("Request to get ordered ClientBasketItems");
+        List<ClientBasketItemDTO> result = clientBasketItemRepository.findByOrdered(ordered).stream()
             .map(clientBasketItemMapper::clientBasketItemToClientBasketItemDTO)
             .collect(Collectors.toCollection(LinkedList::new));
         return result;

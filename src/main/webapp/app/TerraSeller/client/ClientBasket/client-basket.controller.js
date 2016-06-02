@@ -40,6 +40,7 @@
         vm.applyUseType = applyUseType;
         vm.cancelDelBasket = cancelDelBasket;
         vm.delBasket = delBasket;
+        vm.itemOrderedChange = itemOrderedChange;
 
         vm.loadByClient = function() {
             ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
@@ -406,8 +407,18 @@
         };
 
         function delBasket() {
+            var items = {};
+
+            angular.forEach(vm.basketItems, function(item) {
+                items.push({
+                    name: item.name,
+                    qty: item.qty
+                });
+                ClientBasketItem.delete({id: item.id});
+            });
+
             vm.clientBasket.deleted = true;
-            vm.clientBasket.info = JSON.stringify(vm.clientBasket.infoJSON);
+            vm.clientBasket.info = JSON.stringify(items);
             ClientBasket.update(vm.clientBasket, function(){
                 vm.clientBasket = {};
                 vm.basketItems = {};
@@ -416,6 +427,10 @@
                 vm.calcSum = 0;
                 vm.loadByClient();
             });
+        };
+
+        function itemOrderedChange(item) {
+            ClientBasketItem.update(item);
         };
 
     }

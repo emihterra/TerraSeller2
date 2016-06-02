@@ -19,7 +19,8 @@
                 }
             },
             'save': { method:'POST' },
-            'update': { method:'PUT' }
+            'update': { method:'PUT' },
+            'delete': { method:'DELETE' }
         });
     }
 })();
