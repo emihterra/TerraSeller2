@@ -11,20 +11,23 @@
 
     ClientOrderController.$inject =
         ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
-            'terraSellerStockService', 'terraSellerSearchService'];
+            'terraSellerStockService', 'terraSellerSearchService', 'terraSellerOrderService'];
 
     function ClientOrderController (
         $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
-        terraSellerStockService, terraSellerSearchService) {
+        terraSellerStockService, terraSellerSearchService, terraSellerOrderService) {
 
         var vm = this;
         vm.orderItems = {};
         vm.clientCode = "";
         vm.emplcode = "";
+        vm.division = "";
+        vm.dimension = "";
         vm.selectedItem = null;         // продукт, на котором нажали кнопку Info
         vm.stockData = [];              // Info по продукту - наличие на складах
         vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
         vm.orderSum = 0;
+        vm.divisionList = {};
 
         vm.show2rowName = show2rowName;
         vm.clickInfo = clickInfo;
@@ -33,6 +36,14 @@
         vm.getTypeStr = getTypeStr;
         vm.reCount = reCount;
         vm.makeOrder = makeOrder;
+
+        terraSellerOrderService.getDivisions().then(function(response){
+            vm.divisionList = response;
+
+            if(vm.divisionList.length > 0){
+                vm.division = vm.divisionList[0].merch_name;
+            }
+        });
 
         function loadOrderItems() {
             ClientBasketItem.query({idbasket: "", orderedOnly: "true"}, function(result) {
@@ -52,6 +63,7 @@
             terraSellerSettingsService.get(account.login).then(function(settings){
                 if(settings.lastClientCode) {
                     vm.clientCode = settings.lastClientCode;
+                    vm.dimension = settings.dimension;
                     vm.emplcode = settings.emplcode;
                     loadOrderItems();
                 }
@@ -152,96 +164,41 @@
         };
 
         function makeOrder() {
-            if (!$scope.clientParams.client.code) {
-                toastr.warning('Укажите код клиента', 'Ошибка валидации');
-                $scope.clientParams.error = true;
-                //var clientInput = document.querySelector("#clientName");
-                //clientInput.scrollIntoView(true);
-                //window.scrollBy(0, -35);
-                return;
-            }
             // Запрос на создание корзины товаров в Axapta
-            $http({
-                url: UrlApi.baseAPI + UrlApi.endPoint.basket,
-                method: 'POST',
-                data: {
-                    custaccount: $scope.clientParams.client.code,
-                    priceGroup: 'РОЗН',
-                    division: $scope.clientParams.division.merch_name,
-                    dimensionnum: $scope.dimension,
-                    emlcode: $scope.employee.emplcode
-                },
-                transformResponse: undefined
-            })
-                .success(function (result) {
+            terraSellerOrderService.createOrderHeader({
+                custaccount: vm.clientCode,
+                priceGroup: 'РОЗН',
+                division: vm.division,
+                dimensionnum: vm.dimension,
+                emlcode: vm.emplcode
+            }).then(function(bsCode){
 
-                    var bsCode = result.trim();
-                    var bsOrderNumber = '';
+                var data = [];
+                var ids = "";
+                var orderNumber = "";
 
-                    toastr.success('Код вашей корзины - ' + bsCode, 'Корзина успешно сохранена');
-                    var data = [];
-                    angular.forEach($scope.finalBasketItems, function (item) {
-                        var ids = item.data.combo.split('/');
-                        data.push({
-                            itemcode: item.itemcode,
-                            qty: item.qty.toString(),
-                            price: item.price,
-                            stock: item.data.stock,
-                            colorID: ids[1],
-                            sizeID: ids[0],
-                            bs_code: bsCode,
-                            status: '10',
-                            cID: 'еtest,'
-                        });
+                angular.forEach(vm.orderItems, function (item) {
+                    ids = item.combo.split('/');
+                    data.push({
+                        itemcode: item.code,
+                        qty: item.qty.toString(),
+                        price: item.price,
+                        stock: item.stock,
+                        colorID: ids[1],
+                        sizeID: ids[0],
+                        bs_code: bsCode,
+                        status: '10',
+                        cID: 'еtest,'
                     });
-
-                    // Запрос на создание позиций товаров корзины в Axapta
-                    $http({
-                        url: UrlApi.baseAPI + UrlApi.endPoint.basketLines,
-                        method: 'POST',
-                        data: data,
-                        transformResponse: undefined
-                    })
-                        .success(function (result) {
-
-                            // Получаем номер заказа по коду корзины в Axapta
-                            $http({
-                                url: UrlApi.baseAPI + UrlApi.endPoint.orderNumber + bsCode,
-                                method: 'GET',
-                                transformResponse: undefined
-                            })
-                                .success(function (result) {
-                                    bsOrderNumber = result.trim();
-
-                                    var dataPreorder = [];
-
-                                    dataPreorder.push({
-                                        id: '',
-                                        clientCode: $scope.clientParams.client.code,
-                                        clientName: $scope.clientParams.client.name,
-                                        basketCode: bsCode,
-                                        orderNumber: bsOrderNumber,
-                                        employeeID: $scope.employeeID
-                                    });
-
-                                    // Скидываем инфу по корзине в Mongo
-                                    $http({
-                                        url: UrlApi.mongoURL + UrlApi.endPoint.addPreorder,
-                                        method: 'POST',
-                                        data: dataPreorder,
-                                        transformResponse: undefined
-                                    }).success(function (result) {
-                                    });
-
-                                    angular.forEach($scope.finalBasketItems, function (item) {
-                                        $scope.deleteFBItem(item);
-                                    });
-                                });
-                        });
-                })
-                .error(function () {
-                    toastr.error('Корзина НЕ сохранена. Попробуйте ещё раз', 'Ошибка сохранения');
                 });
+
+                terraSellerOrderService.createOrderBody(data).then(function(){
+                    terraSellerOrderService.getOrderNumber(bsCode).then(function(orderNumberRes){
+                        orderNumber = orderNumberRes;
+                    });
+                });
+
+            });
         }
 
 

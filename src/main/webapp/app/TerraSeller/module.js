@@ -146,7 +146,7 @@
                 },
                 views: {
                     'content@app': {
-                        templateUrl: 'app/TerraSeller/client/ClientBasket/client-order.html',
+                        templateUrl: 'app/TerraSeller/client/ClientOrder/client-order.html',
                         controller: 'ClientOrderController',
                         controllerAs: 'vm'
                     }

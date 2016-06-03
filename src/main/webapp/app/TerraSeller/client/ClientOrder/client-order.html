@@ -4,6 +4,13 @@
         <big-breadcrumbs items="['Заказ']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
     </div>
 
+    <div class="row" style="padding-left: 15px">
+        <label class="control-label">Магазин</label>
+        <select id="divisions" name="divisions" class="form-control" ng-model="vm.division" style="max-width: 200px">
+            <option ng-repeat="item in vm.divisionList" value="{{item.merch_name}}">{{item.merch_name}}</option>
+        </select>
+    </div>
+
     <section widget-grid id="widget-grid">
         <div class="row" ng-show="true" style="margin-top: 30px">
             <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
