@@ -39,15 +39,6 @@
                                                    ng-keyup="item.recounted = false;vm.checkItemQty(item);"
                                                    style="width: 80px; height: 30px;text-align: center"
                                                    onClick="this.select();"/><br>
-                                            <div class="onoffswitch-container">
-                                    <span class="onoffswitch">
-                                        <input type="checkbox" class="onoffswitch-checkbox" id="inline_{{item.id}}" ng-model="item.checked">
-                                        <label class="onoffswitch-label" for="inline_{{item.id}}" ng-click="toggleInline()">
-                                            <span class="onoffswitch-inner" data-swchon-text="ДА" data-swchoff-text="НЕТ"></span>
-                                            <span class="onoffswitch-switch"></span>
-                                        </label>
-                                    </span>
-                                            </div>
                                         </td>
                                         <td width="50px">
                                             <div style="width: 50px;height: 50px; overflow: hidden">
@@ -61,7 +52,7 @@
                                                 <span class="glyphicon glyphicon-question-sign"></span>
                                             </button>
                                         </td>
-                                        <td><span style="color: #0c7cd5">{{item.code}} - <a ng-click="vm.selectedItemType=item" data-toggle="modal" data-target="#productUseTypeModal">{{ vm.getTypeStr(item) }}</a></span><br>
+                                        <td><span style="color: #0c7cd5">{{item.code}} - {{ vm.getTypeStr(item) }}</span><br>
                                             <span style="color: #019b15">{{vm.show2rowName(item.name)[0]}}</span><br>
                                             {{vm.show2rowName(item.name)[1]}} , {{item.unit}}
                                         </td>
@@ -70,7 +61,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td colspan="6">Итого: {{ vm.basketSum }} руб.</td>
+                                        <td colspan="6">Итого: {{ vm.orderSum }} руб.</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -83,6 +74,15 @@
             </article>
         </div>
     </section>
+
+    <div class="row">
+        <div ng-show="vm.orderItems.length > 0" style="float: left; padding-left: 15px">
+            <button class="btn btn-primary" ng-click="vm.reCount()">Пересчет единиц</button>
+        </div>
+        <div ng-show="vm.orderItems.length > 0" style="float: left; padding-left: 20px">
+            <button class="btn btn-success" ng-click="vm.makeOrder()">Оформить</button>
+        </div>
+    </div>
 
     <p class="text-center text-muted" if-loading>
         <span class="fa fa-spinner fa-spin fa-4x"></span>

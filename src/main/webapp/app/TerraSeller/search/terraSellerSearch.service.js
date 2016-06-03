@@ -16,7 +16,8 @@
             get: get,
             searchCollections: searchCollections,
             isCollectionType: isCollectionType,
-            getPicLinks: getPicLinks
+            getPicLinks: getPicLinks,
+            recountQty: recountQty
         };
 
         return service;
@@ -77,6 +78,15 @@
                 } else {
                     return true;
                 }
+            }
+        }
+
+        function recountQty(itemcode, qty) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + itemcode + '/recount/' + qty)
+                .then(getNewQty);
+
+            function getNewQty (response) {
+               return response.data;
             }
         }
 
