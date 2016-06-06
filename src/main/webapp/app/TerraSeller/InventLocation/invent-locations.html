@@ -1,0 +1,73 @@
+<div id="content">
+
+    <div class="row">
+        <big-breadcrumbs items="['Склады']" icon="user" class="col-xs-12 col-sm-7 col-md-7 col-lg-4"></big-breadcrumbs>
+    </div>
+
+    <section widget-grid id="widget-grid">
+        <div class="row" ng-show="true" style="margin-top: 30px">
+            <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div jarvis-widget id="condenced-table-widget1"
+                     data-widget-fullscreenbutton="false"
+                     data-widget-editbutton="false" data-widget-color="blueDark"
+                     data-widget-togglebutton="false" data-widget-deletebutton="false"
+                     data-widget-colorbutton="false">
+                    <header>
+                        <span class="widget-icon"> <i class="fa fa-table"></i> </span>
+                        <h2>Список складов</h2>
+                    </header>
+                    <div>
+                        <div class="widget-body no-padding">
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered table-striped table-condensed table-hover smart-form has-tickbox">
+                                    <thead>
+                                    <tr>
+                                        <th style="vertical-align: middle"></th>
+                                        <th style="vertical-align: middle;width: 20px">Приоритет</th>
+                                        <th style="vertical-align: middle">Сокр.</th>
+                                        <th style="vertical-align: middle">Наименование</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="item in vm.Locations">
+                                        <td>
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="checkbox-inline" ng-model="item.checked" ng-change="vm.checkedStateChanged()">
+                                                <i></i>
+                                            </label>
+                                        </td>
+                                        <td>
+                                            <input type="text"
+                                                   min="0"
+                                                   ng-model="item.priority"
+                                                   ng-keyup="vm.updatePriority(item);"
+                                                   style="width: 80px; height: 30px;text-align: center"
+                                                   onClick="this.select();"/><br>
+                                        </td>
+                                        <td>
+                                            {{ item.code }}
+                                        </td>
+                                        <td>
+                                            {{ item.name }}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <p class="text-center text-muted" if-loading>
+        <span class="fa fa-spinner fa-spin fa-4x"></span>
+        <br /><br />
+        Загрузка данных, подождите...
+    </p>
+
+</div>

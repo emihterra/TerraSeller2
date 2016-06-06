@@ -151,6 +151,23 @@
                         controllerAs: 'vm'
                     }
                 }
+            })
+
+            .state('app.terraSeller.invent-location', {
+                url: '/invent-location',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Склады',
+                    title: 'Склады'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/InventLocation/invent-locations.html',
+                        controller: 'InventLocationController',
+                        controllerAs: 'vm'
+                    }
+                }
             });
+
     }
 })();

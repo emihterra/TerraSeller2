@@ -22,16 +22,16 @@
         return service;
 
         function createOrderHeader (OrderHeader) {
-            return $http.post(appConfig.apiSIUrl + 'cart/create/', OrderHeader)
+            return $http.post(appConfig.apiSIUrl + 'cart/create/', OrderHeader, {transformResponse: undefined})
                 .then(createOrderHeaderComplete);
 
             function createOrderHeaderComplete (response) {
-                return response.trim();
+                return response.data;
             }
         }
 
         function createOrderBody (OrderBody) {
-            return $http.post(appConfig.apiSIUrl + 'cart/createLine', OrderBody)
+            return $http.post(appConfig.apiSIUrl + 'cart/createLine', OrderBody, {transformResponse: undefined})
                 .then(createOrderBodyComplete);
 
             function createOrderBodyComplete (response) {

@@ -172,7 +172,6 @@
                 dimensionnum: vm.dimension,
                 emlcode: vm.emplcode
             }).then(function(bsCode){
-
                 var data = [];
                 var ids = "";
                 var orderNumber = "";
