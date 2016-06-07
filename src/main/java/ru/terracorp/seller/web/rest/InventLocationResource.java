@@ -1,16 +1,16 @@
 package ru.terracorp.seller.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import ru.terracorp.seller.domain.InventLocation;
-import ru.terracorp.seller.repository.InventLocationRepository;
-import ru.terracorp.seller.web.rest.util.HeaderUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.terracorp.seller.domain.InventLocation;
+import ru.terracorp.seller.repository.InventLocationRepository;
+import ru.terracorp.seller.web.rest.util.HeaderUtil;
 
 import javax.inject.Inject;
 import java.net.URI;
@@ -26,10 +26,10 @@ import java.util.Optional;
 public class InventLocationResource {
 
     private final Logger log = LoggerFactory.getLogger(InventLocationResource.class);
-        
+
     @Inject
     private InventLocationRepository inventLocationRepository;
-    
+
     /**
      * POST  /invent-locations : Create a new inventLocation.
      *
@@ -50,6 +50,51 @@ public class InventLocationResource {
         return ResponseEntity.created(new URI("/api/invent-locations/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("inventLocation", result.getId().toString()))
             .body(result);
+    }
+
+    /**
+     * POST  /invent-locations/import : import the list of  new inventLocations.
+     *
+     * @param inventLocations the inventLocation array to import
+     * @return the ResponseEntity with status 201 (Created) and with body of new inventLocations, or with status 400 (Bad Request)
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @RequestMapping(value = "/invent-locations/import",
+        method = RequestMethod.POST,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public @ResponseBody ResponseEntity<Object> importInventLocations(@RequestBody List<InventLocation> inventLocations) throws URISyntaxException {
+        log.debug("REST request to import InventLocations");
+
+        for(InventLocation inventLocation: inventLocations) {
+            inventLocation.setId(null);
+            InventLocation result = inventLocationRepository.save(inventLocation);
+        }
+
+        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
+        return new ResponseEntity<Object>(importedInventLocations, HttpStatus.OK);
+    }
+
+    /**
+     * PUT  /invent-locations/update : Updates an existing inventLocations.
+     *
+     * @param inventLocations the inventLocation array to update
+     * @return the ResponseEntity with status 201 (Created) and with body of updated inventLocations, or with status 400 (Bad Request)
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @RequestMapping(value = "/invent-locations/update",
+        method = RequestMethod.PUT,
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
+    public @ResponseBody ResponseEntity<Object> updateInventLocations(@RequestBody List<InventLocation> inventLocations) throws URISyntaxException {
+        log.debug("REST request to update InventLocations");
+
+        for(InventLocation inventLocation: inventLocations) {
+            InventLocation result = inventLocationRepository.save(inventLocation);
+        }
+
+        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
+        return new ResponseEntity<Object>(importedInventLocations, HttpStatus.OK);
     }
 
     /**
@@ -87,7 +132,7 @@ public class InventLocationResource {
     @Timed
     public List<InventLocation> getAllInventLocations() {
         log.debug("REST request to get all InventLocations");
-        List<InventLocation> inventLocations = inventLocationRepository.findAll();
+        List<InventLocation> inventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
         return inventLocations;
     }
 
@@ -121,9 +166,18 @@ public class InventLocationResource {
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> deleteInventLocation(@PathVariable String id) {
-        log.debug("REST request to delete InventLocation : {}", id);
-        inventLocationRepository.delete(id);
+    public ResponseEntity<Void> deleteInventLocation(
+        @PathVariable String id,
+        @RequestParam(name = "all", required = false, defaultValue = "false") Boolean all) {
+
+        if(all) {
+            log.debug("REST request to delete InventLocation : {}", id);
+            inventLocationRepository.deleteAll();
+        } else {
+            log.debug("REST request to delete InventLocation : {}", id);
+            inventLocationRepository.delete(id);
+        }
+
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("inventLocation", id.toString())).build();
     }
 
