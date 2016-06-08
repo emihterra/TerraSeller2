@@ -11,11 +11,11 @@
 
     ClientOrderController.$inject =
         ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
-            'terraSellerStockService', 'terraSellerSearchService', 'terraSellerOrderService'];
+            'terraSellerStockService', 'terraSellerSearchService', 'terraSellerOrderService', 'InventLocation'];
 
     function ClientOrderController (
         $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
-        terraSellerStockService, terraSellerSearchService, terraSellerOrderService) {
+        terraSellerStockService, terraSellerSearchService, terraSellerOrderService, InventLocation) {
 
         var vm = this;
         vm.orderItems = {};
@@ -28,6 +28,7 @@
         vm.stockHeader = ['','','','',''];            // Info по продукту - суммарная информация
         vm.orderSum = 0;
         vm.divisionList = {};
+        vm.locations = [];
 
         vm.show2rowName = show2rowName;
         vm.clickInfo = clickInfo;
@@ -36,6 +37,7 @@
         vm.getTypeStr = getTypeStr;
         vm.reCount = reCount;
         vm.makeOrder = makeOrder;
+        vm.countAnalitics = countAnalitics;
 
         terraSellerOrderService.getDivisions().then(function(response){
             vm.divisionList = response;
@@ -198,8 +200,98 @@
                 });
 
             });
+        };
+
+        function getPriority(stockName){
+            angular.forEach(vm.locations, function (location) {
+                if(location.code == stockName){
+                    return location.priority;
+                }
+            });
+            return 0;
         }
 
+        function getStockAndAnaliticsByQuantity(orderItem){
+            var stocksMore = [];
+            var stocksLess = [];
+            var res = {stock: "", analitics: "", delta: -1, priority: 0};
+            var locations = [];
+            var priority = 0;
+
+            function CompareRes(stockName, stockDelta, stockQty, stockPriority, stockAnalitics) {
+                if((res.delta == -1)||(res.delta > stockDelta)||((res.delta == stockQty)&&(res.priority < stockPriority))){
+                    res.stock = stockName;
+                    res.analitics = stockAnalitics;
+                    res.delta = stockDelta;
+                    res.priority = stockPriority;
+                    res.stockQty = stockQty;
+                }
+            }
+
+            terraSellerStockService.get(vm.emplcode, orderItem.code).then(function (stockServiceResponse){
+
+                angular.forEach(stockServiceResponse, function (item) {
+
+                    priority = getPriority(item.stock);
+
+                    if(item.age >= orderItem.qty) {
+
+                        stocksMore.push({
+                            stock: item.stock,
+                            analitics: item.analitics,
+                            qty: item.age,
+                            delta: (item.age - orderItem.qty),
+                            priority: priority
+                        });
+
+                        CompareRes(item.stock, (item.age - orderItem.qty), item.age, priority, item.analitics);
+
+                    } else {
+                        stocksLess.push({
+                            stock: item.stock,
+                            analitics: item.analitics,
+                            qty: item.age,
+                            delta: (orderItem.qty - item.age),
+                            priority: priority
+                        });
+                    }
+                });
+
+
+                if((res.stock == "")&&(stocksLess.length > 0)){
+                    angular.forEach(stocksLess, function (item) {
+                        CompareRes(item.stock, item.delta, item.qty, item.priority, item.analitics);
+                    });
+                };
+
+
+                if(res.stock == ""){
+                    angular.forEach(locations, function (item) {
+                        if(res.priority < item.priority){
+                            res.stock = item.stock;
+                            res.analitics = item.analitics;
+                            res.delta = 0;
+                            res.priority = item.priority;
+                            res.stockQty = 0;
+                        }
+                    });
+                };
+
+                orderItem.stock = res.stock;
+                orderItem.combo = res.analitics;
+                orderItem.stockQty = res.stockQty;
+            });
+        };
+
+        function countAnalitics(){
+            InventLocation.query(function(InventLocationResponse) {
+                vm.locations = InventLocationResponse;
+
+                angular.forEach(vm.orderItems, function (item) {
+                    getStockAndAnaliticsByQuantity(item);
+                });
+            });
+        };
 
     }
 })();
