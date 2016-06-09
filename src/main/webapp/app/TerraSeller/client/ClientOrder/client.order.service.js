@@ -44,7 +44,8 @@
                 .then(getOrderNumberComplete);
 
             function getOrderNumberComplete (response) {
-                return response.trim();
+                console.log(response);
+                return response;
             }
         }
 

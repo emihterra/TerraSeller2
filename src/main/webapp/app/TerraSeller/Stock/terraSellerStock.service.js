@@ -14,7 +14,9 @@
     function terraSellerStockService ($filter, $http) {
         var service = {
             get: get,
-            getHeader: getHeader
+            getStocksFast: getStocksFast,
+            getHeader: getHeader,
+            getProdDefaults: getProdDefaults
         };
 
         return service;
@@ -40,11 +42,41 @@
             }
         }
 
+        function getStocksFast (itemcode) {
+            return $http.get(appConfig.apiSIUrl + 'stocks/fast/' + itemcode)
+                .then(getStockInfoComplete);
+
+            function getStockInfoComplete (response) {
+                var data = [];
+
+                angular.forEach(response.data, function (item) {
+                    data.push({
+                        stock: item.stock,
+                        analitics: item.sizeTon + "/" + item.color,
+                        age: item.total
+                    });
+                });
+
+                return data;
+//                var orderBy = $filter('orderBy');
+//                return orderBy(properties, 'prefix');
+            }
+        }
+
         function getHeader (emplid) {
             return $http.get(appConfig.apiSIUrl + 'stocks/header?employee=' + emplid)
                 .then(getHeaderComplete);
 
             function getHeaderComplete (response) {
+                return response.data;
+            }
+        }
+
+        function getProdDefaults(itemCode) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + itemCode + '/defaults')
+                .then(getProdDefaultsComplete);
+
+            function getProdDefaultsComplete (response) {
                 return response.data;
             }
         }

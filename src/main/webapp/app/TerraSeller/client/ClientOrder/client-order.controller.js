@@ -194,11 +194,26 @@
                 });
 
                 terraSellerOrderService.createOrderBody(data).then(function(){
-                    terraSellerOrderService.getOrderNumber(bsCode).then(function(orderNumberRes){
-                        orderNumber = orderNumberRes;
+                    $.smallBox({
+                        title: "Заказ " + bsCode + " создан успешно!",
+                        content: "",
+                        color: "#0F5933",
+                        iconSmall: "fa fa-thumbs-up bounce animated",
+                        timeout: 4000
+                    });
+//                    terraSellerOrderService.getOrderNumber(bsCode).then(function(orderNumberRes){
+//                        orderNumber = orderNumberRes;
+//                    });
+                },
+                function(){
+                    $.smallBox({
+                        title: "Ошибка создания заказа " + bsCode,
+                        content: "",
+                        color: "#A90329",
+                        iconSmall: "fa fa-ban bounce animated",
+                        timeout: 4000
                     });
                 });
-
             });
         };
 
@@ -211,11 +226,14 @@
             return 0;
         }
 
+        // Автоматический подбор комбинаций аналитик номенклатуры
+        // 1. поиск идет по разрешенным складам, где остаток больший или равный чем требуется , ищем с наименьшей разницей от того сколько надо и сколько есть. Если найдено несколько складов с одинаковым количеством, то берем с большим приоритетом
+        // 2. если не нашли, то поиск по складам с меньшим количеством, чем надо, но опять с наименьшей разницей, далее по приоритету
+        // 3. если опять не нашли, то делаем запрос значений по умолчанию
         function getStockAndAnaliticsByQuantity(orderItem){
             var stocksMore = [];
             var stocksLess = [];
             var res = {stock: "", analitics: "", delta: -1, priority: 0};
-            var locations = [];
             var priority = 0;
 
             function CompareRes(stockName, stockDelta, stockQty, stockPriority, stockAnalitics) {
@@ -228,13 +246,14 @@
                 }
             }
 
-            terraSellerStockService.get(vm.emplcode, orderItem.code).then(function (stockServiceResponse){
+            terraSellerStockService.getStocksFast(orderItem.code).then(function (stockServiceResponse) {
 
                 angular.forEach(stockServiceResponse, function (item) {
 
                     priority = getPriority(item.stock);
 
-                    if(item.age >= orderItem.qty) {
+                    // 1. поиск идет по разрешенным складам, где остаток больший или равный чем требуется , ищем с наименьшей разницей от того сколько надо и сколько есть. Если найдено несколько складов с одинаковым количеством, то берем с большим приоритетом
+                    if (item.age >= orderItem.qty) {
 
                         stocksMore.push({
                             stock: item.stock,
@@ -257,29 +276,33 @@
                     }
                 });
 
-
-                if((res.stock == "")&&(stocksLess.length > 0)){
+                // 2. если не нашли, то поиск по складам с меньшим количеством, чем надо, но опять с наименьшей разницей, далее по приоритету
+                if ((res.stock == "") && (stocksLess.length > 0)) {
                     angular.forEach(stocksLess, function (item) {
                         CompareRes(item.stock, item.delta, item.qty, item.priority, item.analitics);
                     });
                 };
 
-
-                if(res.stock == ""){
-                    angular.forEach(locations, function (item) {
-                        if(res.priority < item.priority){
-                            res.stock = item.stock;
-                            res.analitics = item.analitics;
-                            res.delta = 0;
-                            res.priority = item.priority;
-                            res.stockQty = 0;
-                        }
+                // 3. если опять не нашли, то делаем запрос значений по умолчанию
+                if (res.stock == "") {
+                    terraSellerStockService.getProdDefaults(orderItem.code).then(function (def) {
+                        orderItem.stock = def.stock;
+                        orderItem.combo = def.color + '/' + def.size_ton;
+                        orderItem.stockQty = 0;
+                        ClientBasketItem.update(orderItem);
                     });
-                };
+                } else {
 
-                orderItem.stock = res.stock;
-                orderItem.combo = res.analitics;
-                orderItem.stockQty = res.stockQty;
+                    // проверяем на всякий случай на пустую строку и на строку "/" (странно, но в базе бывает три символа)
+                    if ((res.analitics == "") || (res.analitics == "/") || (res.analitics.trim() == String.fromCharCode(2, 47, 2))) {
+                        res.analitics = "НеОпр/НеОпр";
+                    };
+
+                    orderItem.stock = res.stock;
+                    orderItem.combo = res.analitics;
+                    orderItem.stockQty = res.stockQty;
+                    ClientBasketItem.update(orderItem);
+                }
             });
         };
 
