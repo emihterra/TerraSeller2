@@ -12,8 +12,10 @@
 
         vm.clientRooms = [];
         vm.clientCode = 0;
+        vm.roomForDeletion = null;
 
         vm.deleteRoom = deleteRoom;
+        vm.clearRoomDeletion = clearRoomDeletion;
 
         vm.loadByClient = function() {
             ClientRoom.query({client: vm.clientCode}, function(result) {
@@ -31,8 +33,13 @@
         });
 
         function deleteRoom(id){
-            ClientRoom.delete(id);
-            vm.loadByClient();
+            ClientRoom.delete({id: id}, function() {
+                vm.loadByClient();
+            });
+        }
+
+        function clearRoomDeletion(){
+            vm.roomForDeletion = null;
         }
     }
 })();
