@@ -30,38 +30,38 @@
                      />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_r_length">Длина</label>
+            <label class="control-label" for="field_r_length">Длина,см</label>
             <input type="number" class="form-control" name="r_length" id="field_r_length"
                     ng-model="vm.clientRoom.r_length"
                      />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_r_width">Ширина</label>
+            <label class="control-label" for="field_r_width">Ширина,см</label>
             <input type="number" class="form-control" name="r_width" id="field_r_width"
                     ng-model="vm.clientRoom.r_width"
                      />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_r_height">Высота</label>
+            <label class="control-label" for="field_r_height">Высота,см</label>
             <input type="number" class="form-control" name="r_height" id="field_r_height"
                     ng-model="vm.clientRoom.r_height"
                      />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_bottom_border_height">Высота до нижнего бордюра</label>
+            <label class="control-label" for="field_bottom_border_height">Высота до нижнего бордюра,см</label>
             <input type="number" class="form-control" name="bottom_border_height" id="field_bottom_border_height"
                     ng-model="vm.clientRoom.bottom_border_height"
                      />
         </div>
-        <div class="form-group">
-            <label class="control-label" for="field_top_border_height">Высота до верхнего бордюра</label>
+        <!--<div class="form-group">
+            <label class="control-label" for="field_top_border_height">Высота до верхнего бордюра,см</label>
             <input type="number" class="form-control" name="top_border_height" id="field_top_border_height"
                     ng-model="vm.clientRoom.top_border_height"
                      />
-        </div>
+        </div>-->
 
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.toList()">
-            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;К списку
+        <button type="button" class="btn btn-success" data-dismiss="modal" ng-click="vm.toList()">
+            <span class="glyphicon glyphicon-list"></span>&nbsp;К списку
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">
             <span class="glyphicon glyphicon-save"></span>&nbsp;Сохранить
@@ -88,8 +88,8 @@
                             <tr>
                                 <th>Имя</th>
                                 <th>Тип</th>
-                                <th>Ширина</th>
-                                <th>Высота</th>
+                                <th>Ширина,см</th>
+                                <th>Высота,см</th>
                                 <!--<th>Верх.точка</th>-->
                                 <th></th>
                             </tr>
@@ -97,7 +97,7 @@
                             <tbody>
                             <tr ng-repeat="clientRoomItem in vm.clientRoomItems track by clientRoomItem.id">
                                 <td>{{clientRoomItem.name}}</td>
-                                <td>{{clientRoomItem.item_type}}</td>
+                                <td>{{vm.getItemTypeStr(clientRoomItem.item_type)}}</td>
                                 <td>{{clientRoomItem.i_width}}</td>
                                 <td>{{clientRoomItem.i_height}}</td>
                                 <!--<td>{{clientRoomItem.i_top}}</td>-->
@@ -138,13 +138,20 @@
             />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_item_i_width">Ширина</label>
+            <label class="control-label" for="field_item_i_width">Тип</label>
+            <select name="i_type" id="field_item_i_type" ng-model="vm.clientRoomItem.item_type">
+                <option value="1">Окно</option>
+                <option value="2">Дверь</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="control-label" for="field_item_i_width">Ширина,см</label>
             <input type="number" class="form-control" name="i_width" id="field_item_i_width"
                    ng-model="vm.clientRoomItem.i_width"
             />
         </div>
         <div class="form-group">
-            <label class="control-label" for="field_item_i_height">Высота</label>
+            <label class="control-label" for="field_item_i_height">Высота,см</label>
             <input type="number" class="form-control" name="i_height" id="field_item_i_height"
                    ng-model="vm.clientRoomItem.i_height"
             />
