@@ -32,20 +32,23 @@ public class UserSettingsService {
         });
     }
 
-    public UserSettings createUserSettings(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient) {
+    public UserSettings createUserSettings(
+        String login, String emplcode, String dimension, String lastClientCode,
+        Boolean useDefaultClient, String clients) {
         UserSettings newUserSettings = new UserSettings();
         newUserSettings.setLogin(login);
         newUserSettings.setEmplcode(emplcode);
         newUserSettings.setDimension(dimension);
         newUserSettings.setLastClientCode(lastClientCode);
         newUserSettings.setUseDefaultClient(useDefaultClient);
+        newUserSettings.setClients(clients);
         userSettingsRepository.save(newUserSettings);
         return newUserSettings;
     }
 
     void checkIfUserSettingsPresent(String login){
         if(!userSettingsRepository.findOneByLogin(login).isPresent()) {
-            createUserSettings(login, "", "", "", true);
+            createUserSettings(login, "", "", "", true, "");
         }
     }
 
@@ -82,7 +85,7 @@ public class UserSettingsService {
         });
     }
 
-    public void updateUserSettings(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient){
+    public void updateUserSettings(String login, String emplcode, String dimension, String lastClientCode, Boolean useDefaultClient, String clients){
 
         checkIfUserSettingsPresent(login);
 
@@ -91,6 +94,7 @@ public class UserSettingsService {
             u.setDimension(dimension);
             u.setLastClientCode(lastClientCode);
             u.setUseDefaultClient(useDefaultClient);
+            u.setClients(clients);
             userSettingsRepository.save(u);
             log.debug("Changed Information for UserSettings: {}", u);
         });

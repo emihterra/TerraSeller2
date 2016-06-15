@@ -16,7 +16,8 @@
             createOrderHeader: createOrderHeader,
             createOrderBody: createOrderBody,
             getOrderNumber: getOrderNumber,
-            getDivisions: getDivisions
+            getDivisions: getDivisions,
+            getTypeStr: getTypeStr
         };
 
         return service;
@@ -58,5 +59,22 @@
             }
         }
 
+        function getTypeStr(item){
+            var retStr = "тип не опр";
+
+            switch(item.useType) {
+                case "1": retStr = "Светлая"; break;
+                case "2": retStr = "Темная"; break;
+                case "3": retStr = "Пол"; break;
+                case "4": retStr = "Мозаика"; break;
+                case "5": retStr = "Бордюр нижний"; break;
+                case "6": retStr = "Бордюр верхний"; break;
+                case "7": retStr = "Декор"; break;
+                default: retStr = "тип не опр"; break;
+            };
+
+            return retStr;
+        };
+        
     }
 })();

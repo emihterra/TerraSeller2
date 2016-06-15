@@ -36,7 +36,7 @@
                 Auth.createAccount(vm.registerAccount).then(function () {
                     vm.success = 'OK';
                     vm.emplSettings.login = vm.registerAccount.login;
-                    terraSellerSettingsService.data().save(vm.emplSettings);
+                    terraSellerSettingsService.save(vm.emplSettings);
                 }).catch(function (response) {
                     vm.success = null;
                     if (response.status === 400 && response.data === 'login already in use') {

@@ -38,6 +38,9 @@ public class UserSettings implements Serializable {
     @Field("useDefaultClient")
     private Boolean useDefaultClient;
 
+    @Field("clients")
+    private String clients;
+
     public String getId() {
         return id;
     }
@@ -84,6 +87,14 @@ public class UserSettings implements Serializable {
 
     public void setUseDefaultClient(Boolean useDefaultClient) {
         this.useDefaultClient = useDefaultClient;
+    }
+
+    public String getClients() {
+        return clients;
+    }
+
+    public void setClients(String clients) {
+        this.clients = clients;
     }
 
     @Override

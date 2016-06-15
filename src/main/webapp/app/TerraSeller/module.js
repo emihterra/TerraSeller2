@@ -153,6 +153,22 @@
                 }
             })
 
+            .state('app.terraSeller.client-search', {
+                url: '/client-search',
+                data: {
+                    authorities: ['ROLE_USER'],
+                    pageTitle: 'Поиск клиента',
+                    title: 'Поиск клиента'
+                },
+                views: {
+                    'content@app': {
+                        templateUrl: 'app/TerraSeller/client/ClientSearch/client-search.html',
+                        controller: 'terraSellerClientSearchController',
+                        controllerAs: 'vm'
+                    }
+                }
+            })
+
             .state('app.terraSeller.invent-location', {
                 url: '/invent-location',
                 data: {

@@ -6,10 +6,12 @@
         .controller('ClientBasketController', ClientBasketController);
 
     ClientBasketController.$inject =
-        ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem', 'terraSellerStockService', 'ClientRoom'];
+        ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
+            'terraSellerStockService', 'ClientRoom', 'terraSellerOrderService'];
 
     function ClientBasketController (
-        $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem, terraSellerStockService, ClientRoom) {
+        $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
+        terraSellerStockService, ClientRoom, terraSellerOrderService) {
 
         var vm = this;
         vm.clientBaskets = [];
@@ -41,6 +43,7 @@
         vm.cancelDelBasket = cancelDelBasket;
         vm.delBasket = delBasket;
         vm.itemOrderedChange = itemOrderedChange;
+        vm.applyForRoom = applyForRoom;
 
         vm.loadByClient = function() {
             ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
@@ -175,43 +178,32 @@
         };
 
         function getTypeStr(item){
-            var retStr = "тип не опр";
-
-            switch(item.useType) {
-                case "1": retStr = "Светлая"; break;
-                case "2": retStr = "Темная"; break;
-                case "3": retStr = "Пол"; break;
-                case "4": retStr = "Мозаика"; break;
-                case "5": retStr = "Бордюр нижний"; break;
-                case "6": retStr = "Бордюр верхний"; break;
-                case "7": retStr = "Декор"; break;
-                default: retStr = "тип не опр"; break;
-            };
-
-            return retStr;
+            return terraSellerOrderService.getTypeStr(item);
         };
 
         function getSize(item) {
             var itemWidth = 0;
             var itemHeight = 0;
-
             if (item.itemsize) {
                 var tmpAr = [];
 
-                tmpAr = item.itemsize.split('x');
+                if(item.itemsize.indexOf('x') > -1){
+                    tmpAr = item.itemsize.split('x');
+                };
+                if(item.itemsize.indexOf('х') > -1){
+                    tmpAr = item.itemsize.split('х');
+                };
+
                 if (tmpAr.length >= 2) {
                     itemWidth = parseFloat(tmpAr[0]);
                     if (!itemWidth) {
                         itemWidth = 0;
-                    }
-                    ;
+                    };
                     itemHeight = parseFloat(tmpAr[1]);
                     if (!itemHeight) {
                         itemHeight = 0;
-                    }
-                    ;
-                }
-                ;
+                    };
+                };
             }
 
             return {width: itemWidth, height: itemHeight};
@@ -228,9 +220,23 @@
             vm.calcSum = tmpPrice.toFixed(2);
         }
 
+        function RoundRows(qty){
+            var intPart = Math.floor(qty);
+            var decPart = (qty % 1).toFixed(2);
+
+
+            if(decPart <= 0.5){
+                intPart = intPart + 0.5;
+                return intPart.toFixed(2);
+            } else {
+                intPart = intPart + 1;
+                return intPart.toFixed(2);
+            }
+        }
+
         function countByRoom(roomId){
 
-            var santechHeight = 0.9;
+            var bottom_border_height = 0; // Высота до нижнего бордюра, см
             var itemWidth = 0;
             var itemHeight = 0;
             var tmpSize = {};
@@ -254,6 +260,10 @@
 
                     roomPerimetr = (room.r_width + room.r_length)*2;
 
+                    if(room.bottom_border_height) {
+                        bottom_border_height = room.bottom_border_height;
+                    }
+
                     angular.forEach(vm.basketItems, function(item) {
                         item.info = "";
                         item.infoJSON = {
@@ -267,8 +277,7 @@
                     angular.forEach(vm.basketItems, function(item) {
                         if(item.useType == "5"){ // Бордюр нижний
                             tmpSize = getSize(item);
-                            BottomBorderHeight = itmpSize.height;
-
+                            BottomBorderHeight = tmpSize.height;
                             item.qtycalc = roomPerimetr/tmpSize.width;
                             item.qtycalc = Math.round(item.qtycalc);
                             newprice = item.price*item.qtycalc;
@@ -287,7 +296,6 @@
                     angular.forEach(vm.basketItems, function(item) {
                         if(item.useType == "6"){ // Бордюр верхний
                             tmpSize = getSize(item);
-                            BottomBorderHeight = itmpSize.height;
 
                             item.qtycalc = roomPerimetr/tmpSize.width;
                             item.qtycalc = Math.round(item.qtycalc);
@@ -313,13 +321,13 @@
                             itemWidth = tmpSize.width;
                             itemHeight = tmpSize.height;
 
-                            darkRows = santechHeight/itemHeight;
-                            darkRows = darkRows.toFixed(2);
+                            darkRows = bottom_border_height/itemHeight;
+                            darkRows = RoundRows(darkRows);
                             darkItems = (roomPerimetr/itemWidth)*darkRows;
                             darkItems = darkItems.toFixed(2);
                             darkSquare = darkItems*itemWidth*itemHeight/10000;
                             darkSquare = darkSquare.toFixed(2);
-                            darkItemsHeight = itemHeight*darkRows;
+                            darkItemsHeight = itemHeight;
                             item.qtycalc = darkSquare;
                             newprice = item.price*item.qtycalc;
                             newprice = newprice.toFixed(2);
@@ -345,8 +353,8 @@
                             itemWidth = tmpSize.width;
                             itemHeight = tmpSize.height;
 
-                            lightRows = (room.r_height - darkItemsHeight - BottomBorderHeight - TopBorderHeight)/itemHeight;
-                            lightRows = lightRows.toFixed(2);
+                            lightRows = (room.r_height - darkItemsHeight*darkRows - BottomBorderHeight - TopBorderHeight)/itemHeight;
+                            lightRows = RoundRows(lightRows);
                             lightItems = (roomPerimetr/itemWidth)*lightRows;
                             lightItems = lightItems.toFixed(2);
                             lightSquare = lightItems*itemWidth*itemHeight/10000;
@@ -433,5 +441,14 @@
             ClientBasketItem.update(item);
         };
 
+        function applyForRoom(){
+            angular.forEach(vm.basketItems, function(item) {
+                if(item.qtycalc > 0) {
+                    item.qty = item.qtycalc;
+                    ClientBasketItem.update(item);
+                }
+            });
+            vm.countBasketSum();
+        };
     }
 })();
