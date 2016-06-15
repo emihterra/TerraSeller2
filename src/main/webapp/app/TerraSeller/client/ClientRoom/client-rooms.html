@@ -30,11 +30,11 @@
             <thead>
                 <tr>
                     <th>Имя</th>
-                    <th>Длина</th>
-                    <th>Ширина</th>
-                    <th>Высота</th>
-                    <th>Н.бордюр</th>
-                    <th>В.бордюр</th>
+                    <th>Длина,см</th>
+                    <th>Ширина,см</th>
+                    <th>Высота,см</th>
+                    <th>Н.бордюр,см</th>
+                    <th>В.бордюрм,см</th>
                     <th>Действия</th>
                 </tr>
             </thead>
@@ -55,8 +55,8 @@
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <span class="hidden-xs hidden-sm"></span>
                             </button>
-                            <button type="submit"
-                                    ng-click="vm.deleteRoom({id:clientRoom.id})"
+                            <button
+                                    data-toggle="modal" data-target="#confirmRoomDeletion" ng-click="vm.roomForDeletion=clientRoom"
                                     class="btn btn-danger btn-sm"
                                     style="margin-left: 10px">
                                 <span class="glyphicon glyphicon-remove-circle"></span>
@@ -69,3 +69,29 @@
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmRoomDeletion" tabindex="-1" role="dialog" aria-labelledby="confirmRoomDeletionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="confirmRoomDeletionLabel">Удаление помещения</h4>
+            </div>
+            <div class="modal-body">
+                <p>Удалить помещение "{{vm.roomForDeletion.name}}" ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="vm.clearRoomDeletion()">
+                    Отмена
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="vm.deleteRoom(vm.roomForDeletion.id)">
+                    Удалить
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
