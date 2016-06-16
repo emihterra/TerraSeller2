@@ -87,7 +87,9 @@
                                     <span class="glyphicon glyphicon-question-sign"></span>
                                 </button>
                             </td>
-                            <td><span style="color: #0c7cd5">{{item.code}} - <a ng-click="vm.selectedItemType=item" data-toggle="modal" data-target="#productUseTypeModal">{{ vm.getTypeStr(item) }}</a></span><br>
+                            <td><span style="color: #0c7cd5">{{item.code}} -</span>
+                                <a ng-click="vm.selectedItemType=item" data-toggle="modal" data-target="#productUseTypeModal">
+                                    <span style="color: #9f36d5;font-weight: bold">{{ vm.getTypeStr(item) }}</span></a><br>
                                 <span style="color: #019b15">{{item.name}}</span><br>
                                 {{item.itemsize}} , {{item.unit}}
                             </td>

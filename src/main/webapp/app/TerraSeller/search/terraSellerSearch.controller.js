@@ -226,7 +226,7 @@
             }
         };
 
-        function sendToBasket (basketID) {
+        function sendToBasket (basket) {
 
             var basketItem = {};
 
@@ -234,7 +234,7 @@
                 if (item.checked) {
 
                     basketItem = {
-                        idClientBasket: basketID,
+                        idClientBasket: basket.id,
                         code: item.sidUser,
                         name: item.name,
                         qty: 0,
@@ -253,6 +253,19 @@
 
                     ClientBasketItem.save(basketItem);
                 }
+            });
+            vm.searchResult = [];
+            vm.piclinks = [];
+            vm.checkAllState = false;
+            vm.isChecked = false;
+            vm.searchBox = "";
+
+            $.smallBox({
+                title: 'Выбранные товары отправлены в корзину "' + basket.name + '" !',
+                content: "",
+                color: "#0F5933",
+                iconSmall: "fa fa-thumbs-up bounce animated",
+                timeout: 4000
             });
         }
     }

@@ -110,7 +110,7 @@
         </button>
         <ul class="dropdown-menu">
             <li ng-repeat="basket in vm.clientBaskets">
-                <a href="#/seller-search" ng-click="vm.sendToBasket(basket.id)">{{ basket.name }}</a>
+                <a href="#/seller-search" ng-click="vm.sendToBasket(basket)">{{ basket.name }}</a>
             </li>
         </ul>
     </div>

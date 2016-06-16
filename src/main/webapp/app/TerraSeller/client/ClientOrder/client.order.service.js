@@ -60,7 +60,7 @@
         }
 
         function getTypeStr(item){
-            var retStr = "тип не опр";
+            var retStr = "выбрать тип";
 
             switch(item.useType) {
                 case "1": retStr = "Светлая"; break;
@@ -70,11 +70,11 @@
                 case "5": retStr = "Бордюр нижний"; break;
                 case "6": retStr = "Бордюр верхний"; break;
                 case "7": retStr = "Декор"; break;
-                default: retStr = "тип не опр"; break;
+                default: retStr = "выбрать тип"; break;
             };
 
             return retStr;
         };
-        
+
     }
 })();
