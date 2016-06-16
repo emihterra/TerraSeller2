@@ -61,7 +61,7 @@
             </li>
 
             <li data-menu-collapse class="top-menu-invisible" ng-show="vm.isAuthenticated()" has-authority="ROLE_USER">
-                <a href="#"><i class="fa fa-lg fa-fw fa-user txt-color-green"></i> <span class="menu-item-parent">{{getWord('Profile')}}</span></a>
+                <a href="#"><i class="fa fa-lg fa-fw fa-user txt-color-green"></i> <span class="menu-item-parent">{{getWord('Profile')}} ({{vm.settingsAccount.login}})</span></a>
                 <ul>
                     <li data-ui-sref-active="active">
                         <a data-ui-sref="settings"><i class="glyphicon glyphicon-wrench"></i>
@@ -94,16 +94,16 @@
                 <a href="#"><i class="fa fa-lg fa-fw fa-empire txt-color-orangeDark"></i> <span class="menu-item-parent">Продавец</span></a>
                 <ul>
                     <li data-ui-sref-active="active">
-                        <a data-ui-sref="app.terraSeller.search"><i class="glyphicon glyphicon-search"></i>
-                            Поиск</a>
-                    </li>
-                    <li data-ui-sref-active="active">
                         <a data-ui-sref="app.terraSeller.client"><i class="glyphicon glyphicon-user"></i>
                             Клиент</a>
                     </li>
                     <li data-ui-sref-active="active">
                         <a data-ui-sref="app.terraSeller.client-room"><i class="fa fa-lg fa-fw fa-home"></i>
                             Помещения</a>
+                    </li>
+                    <li data-ui-sref-active="active">
+                        <a data-ui-sref="app.terraSeller.search"><i class="glyphicon glyphicon-search"></i>
+                            Поиск</a>
                     </li>
                     <li data-ui-sref-active="active">
                         <a data-ui-sref="app.terraSeller.client-basket"><i class="glyphicon glyphicon-shopping-cart"></i>

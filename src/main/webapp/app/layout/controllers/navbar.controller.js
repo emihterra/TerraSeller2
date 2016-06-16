@@ -5,9 +5,9 @@
         .module('app')
         .controller('HeaderLayoutController', HeaderLayoutController);
 
-    HeaderLayoutController.$inject = ['$location', '$state', '$stateParams', 'Auth', 'Principal', 'ENV', 'LoginService'];
+    HeaderLayoutController.$inject = ['$scope', '$location', '$state', '$stateParams', 'Auth', 'Principal', 'ENV', 'LoginService'];
 
-    function HeaderLayoutController ($location, $state, $stateParams, Auth, Principal, ENV, LoginService) {
+    function HeaderLayoutController ($scope, $location, $state, $stateParams, Auth, Principal, ENV, LoginService) {
         var vm = this;
 
         vm.navCollapsed = true;
@@ -39,9 +39,13 @@
             }
         };
 
-        Principal.identity().then(function(account) {
-            vm.settingsAccount = copyAccount(account);
-        });
+        function loadAccountSettings() {
+            Principal.identity().then(function (account) {
+                vm.settingsAccount = copyAccount(account);
+            });
+        };
+
+        loadAccountSettings();
 
         function login () {
             LoginService.open();
@@ -52,5 +56,10 @@
             LoginService.open();
             //$state.go('app.home', $stateParams, {reload: true, inherit: false});
         }
+
+        $scope.$on('authenticationSuccess', function(){
+            loadAccountSettings();
+        });
+
     }
 })();
