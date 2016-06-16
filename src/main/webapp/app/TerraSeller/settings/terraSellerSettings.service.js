@@ -32,7 +32,7 @@
         };
 
         function update(settings){
-            return $http.put('api/usersettings/', settings)
+            return $http.put('api/usersettings', settings)
                 .then(getSettingsComplete);
 
             function getSettingsComplete (response) {
@@ -41,7 +41,7 @@
         };
 
         function save(settings){
-            return $http.post('api/usersettings/', settings)
+            return $http.post('api/usersettings', settings)
                 .then(getSettingsComplete);
 
             function getSettingsComplete (response) {

@@ -22,7 +22,15 @@ spring:
             uri: mongodb://localhost:27017
             database: terraseller
     mail:
-        host: localhost
+        host: 192.168.12.246
+        port: 25
+        username: virtual_consultant
+        password: Gsli8tgdFh2
+        protocol: smtp
+        tls: false
+        properties.mail.smtp:
+            auth: false
+            starttls.enable: false
     messages:
         cache-seconds: 1
     thymeleaf:
@@ -40,7 +48,7 @@ server:
 
 jhipster:
     mail: # specific JHipster mail property, for standard properties see MailProperties
-        from: terraseller@localhost
+        from: virtual_consultant@etna.com.ru
     metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
         jmx.enabled: true
         spark:

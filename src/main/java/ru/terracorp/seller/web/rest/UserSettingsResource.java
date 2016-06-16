@@ -53,7 +53,7 @@ public class UserSettingsResource {
         method = RequestMethod.POST,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Secured(AuthoritiesConstants.USER)
+    //@Secured(AuthoritiesConstants.USER)
     public ResponseEntity<?> createUserSettings(@RequestBody UserSettingsDTO userSettingsDTO, HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to save User settings : {}", userSettingsDTO.toString());
 
@@ -96,7 +96,7 @@ public class UserSettingsResource {
         method = RequestMethod.PUT,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    @Secured(AuthoritiesConstants.USER)
+    //@Secured(AuthoritiesConstants.USER)
     public ResponseEntity<?> updateUserSettings(@RequestBody UserSettingsDTO userSettingsDTO, HttpServletRequest request) throws URISyntaxException {
         log.debug("REST request to update User settings : {}", userSettingsDTO.toString());
 

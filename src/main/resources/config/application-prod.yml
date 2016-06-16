@@ -22,10 +22,15 @@ spring:
             uri: mongodb://localhost:27017
             database: terraseller
     mail:
-        host: localhost
+        host: 192.168.12.246
         port: 25
-        username:
-        password:
+        username: virtual_consultant
+        password: Gsli8tgdFh2
+        protocol: smtp
+        tls: false
+        properties.mail.smtp:
+            auth: false
+            starttls.enable: false
     thymeleaf:
         cache: true
 

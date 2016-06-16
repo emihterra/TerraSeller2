@@ -36,6 +36,7 @@
                 Auth.createAccount(vm.registerAccount).then(function () {
                     vm.success = 'OK';
                     vm.emplSettings.login = vm.registerAccount.login;
+                    vm.emplSettings.clients = angular.toJson({list: []});
                     terraSellerSettingsService.save(vm.emplSettings);
                 }).catch(function (response) {
                     vm.success = null;
