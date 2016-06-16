@@ -36,6 +36,7 @@
         vm.countOrderSum = countOrderSum;
         vm.getTypeStr = getTypeStr;
         vm.reCount = reCount;
+        vm.reCount2box = reCount2box;
         vm.makeOrder = makeOrder;
         vm.countAnalitics = countAnalitics;
         vm.deleteItem = deleteItem;
@@ -142,6 +143,7 @@
         function reCount() {
             angular.forEach(vm.orderItems, function (cartItem) {
 
+                //if((!cartItem.recounted)&&(cartItem.unit == 'кв.м.')) {
                 if(cartItem.unit == 'кв.м.') {
 
                     terraSellerSearchService.recountQty(cartItem.code, cartItem.qty).then(function(newQty) {
@@ -166,18 +168,19 @@
                         ClientBasketItem.update(cartItem);
                     });
                 }
-                else if(cartItem.unit == 'шт.') {
+                /*else if(cartItem.unit == 'шт.') {
                     terraSellerSearchService.recountPiece2Box(cartItem.code, cartItem.qty).then(function(newQty) {
                         cartItem.qty = newQty;
                         cartItem.recounted = true;
 
                         ClientBasketItem.update(cartItem);
                     });
-                }
+                }*/
             });
         };
 
         function makeOrder() {
+            countAnalitics();
             // Запрос на создание корзины товаров в Axapta
             terraSellerOrderService.createOrderHeader({
                 custaccount: vm.clientCode,
@@ -332,7 +335,8 @@
             var i = 0;
             angular.forEach(vm.orderItems, function(item) {
                 if(item.id == itemForDeletion.id) {
-                    ClientBasketItem.delete({id: item.id});
+                    item.ordered = false;
+                    ClientBasketItem.update(item);
                     vm.orderItems.splice(i, 1);
                     vm.countOrderSum();
                     return;
@@ -340,7 +344,7 @@
                 i++;
             });
         };
-        
+
     }
 })();
 
