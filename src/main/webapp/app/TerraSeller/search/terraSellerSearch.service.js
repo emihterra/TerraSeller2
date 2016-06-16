@@ -17,7 +17,9 @@
             searchCollections: searchCollections,
             isCollectionType: isCollectionType,
             getPicLinks: getPicLinks,
-            recountQty: recountQty
+            recountQty: recountQty,
+            recountMeter2Box: recountMeter2Box,
+            recountPiece2Box: recountPiece2Box
         };
 
         return service;
@@ -81,12 +83,33 @@
             }
         }
 
+        // Пересчет количества в штуки по коду номенклатуры
         function recountQty(itemcode, qty) {
             return $http.get(appConfig.apiSIUrl + 'product/' + itemcode + '/recount/' + qty)
                 .then(getNewQty);
 
             function getNewQty (response) {
                return response.data;
+            }
+        }
+
+        // Пересчет количества в кв.метрах в коробки по коду номенклатуры
+        function recountMeter2Box(itemcode, qty) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + itemcode + '/recountMeter2Box/' + qty)
+                .then(getNewQty);
+
+            function getNewQty (response) {
+                return response.data;
+            }
+        }
+
+        // Пересчет количества в штуках в коробки по коду номенклатуры
+        function recountPiece2Box(itemcode, qty) {
+            return $http.get(appConfig.apiSIUrl + 'product/' + itemcode + '/recountPiece2Box/' + qty)
+                .then(getNewQty);
+
+            function getNewQty (response) {
+                return response.data;
             }
         }
 

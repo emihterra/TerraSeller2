@@ -44,6 +44,7 @@
         vm.delBasket = delBasket;
         vm.itemOrderedChange = itemOrderedChange;
         vm.applyForRoom = applyForRoom;
+        vm.deleteItem = deleteItem;
 
         vm.loadByClient = function() {
             ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
@@ -450,5 +451,19 @@
             });
             vm.countBasketSum();
         };
+
+        function deleteItem(itemForDeletion){
+            var i = 0;
+            angular.forEach(vm.basketItems, function(item) {
+                if(item.id == itemForDeletion.id) {
+                    ClientBasketItem.delete({id: item.id});
+                    vm.basketItems.splice(i, 1);
+                    vm.countBasketSum();
+                    return;
+                }
+                i++;
+            });
+        };
+
     }
 })();

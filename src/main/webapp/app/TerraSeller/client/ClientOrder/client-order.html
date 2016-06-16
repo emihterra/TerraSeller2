@@ -35,6 +35,7 @@
                                         <th style="vertical-align: middle;width: 20px">Инфо</th>
                                         <th style="vertical-align: middle">Название</th>
                                         <th style="vertical-align: middle">Цена</th>
+                                        <th style="vertical-align: middle"></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -67,6 +68,11 @@
                                         <td>
                                             {{ item.price }} руб.
                                         </td>
+                                        <td>
+                                            <button type="button" class="close" aria-hidden="true" ng-click="vm.deleteItem(item)">
+                                                &times;
+                                            </button>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td colspan="6">Итого: {{ vm.orderSum }} руб.</td>
@@ -84,8 +90,18 @@
     </section>
 
     <div class="row">
-        <div ng-show="vm.orderItems.length > 0" style="float: left; padding-left: 15px">
-            <button class="btn btn-primary" ng-click="vm.reCount()">Пересчет единиц</button>
+        <div class="btn-group dropdown" data-dropdown ng-show="vm.orderItems.length > 0" style="float: left; padding-left: 15px">
+            <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-usd"></i> Пересчет единиц <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li>
+                    <a href="#/client-order" ng-click="vm.reCount()">В штуки </a>
+                </li>
+                <li>
+                    <a href="#/client-order" ng-click="vm.reCount2box()">В коробки </a>
+                </li>
+            </ul>
         </div>
         <div ng-show="vm.orderItems.length > 0" style="float: left; padding-left: 15px">
             <button class="btn btn-primary" ng-click="vm.countAnalitics()">Расчет аналитик</button>

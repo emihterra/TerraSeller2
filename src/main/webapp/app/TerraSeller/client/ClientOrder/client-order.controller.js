@@ -38,6 +38,7 @@
         vm.reCount = reCount;
         vm.makeOrder = makeOrder;
         vm.countAnalitics = countAnalitics;
+        vm.deleteItem = deleteItem;
 
         terraSellerOrderService.getDivisions().then(function(response){
             vm.divisionList = response;
@@ -137,12 +138,36 @@
             return terraSellerOrderService.getTypeStr(item);
         };
 
+        // Пересчет количества в штуки по коду номенклатуры
         function reCount() {
             angular.forEach(vm.orderItems, function (cartItem) {
 
-                if((!cartItem.recounted)&&(cartItem.unit == 'кв.м.')) {
+                if(cartItem.unit == 'кв.м.') {
 
                     terraSellerSearchService.recountQty(cartItem.code, cartItem.qty).then(function(newQty) {
+                        cartItem.qty = newQty;
+                        cartItem.recounted = true;
+
+                        ClientBasketItem.update(cartItem);
+                    });
+                }
+            });
+        };
+
+        // Пересчет количества в коробки по коду номенклатуры
+        function reCount2box() {
+            angular.forEach(vm.orderItems, function (cartItem) {
+
+                if(cartItem.unit == 'кв.м.') {
+                    terraSellerSearchService.recountMeter2Box(cartItem.code, cartItem.qty).then(function(newQty) {
+                        cartItem.qty = newQty;
+                        cartItem.recounted = true;
+
+                        ClientBasketItem.update(cartItem);
+                    });
+                }
+                else if(cartItem.unit == 'шт.') {
+                    terraSellerSearchService.recountPiece2Box(cartItem.code, cartItem.qty).then(function(newQty) {
                         cartItem.qty = newQty;
                         cartItem.recounted = true;
 
@@ -303,6 +328,19 @@
             });
         };
 
+        function deleteItem(itemForDeletion){
+            var i = 0;
+            angular.forEach(vm.orderItems, function(item) {
+                if(item.id == itemForDeletion.id) {
+                    ClientBasketItem.delete({id: item.id});
+                    vm.orderItems.splice(i, 1);
+                    vm.countOrderSum();
+                    return;
+                }
+                i++;
+            });
+        };
+        
     }
 })();
 
