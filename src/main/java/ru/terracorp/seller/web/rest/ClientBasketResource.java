@@ -8,8 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.terracorp.seller.service.ClientBasketItemService;
 import ru.terracorp.seller.service.ClientBasketService;
 import ru.terracorp.seller.web.rest.dto.ClientBasketDTO;
+import ru.terracorp.seller.web.rest.dto.ClientBasketItemDTO;
 import ru.terracorp.seller.web.rest.mapper.ClientBasketMapper;
 import ru.terracorp.seller.web.rest.util.HeaderUtil;
 
@@ -30,6 +32,9 @@ public class ClientBasketResource {
 
     @Inject
     private ClientBasketService clientBasketService;
+
+    @Inject
+    private ClientBasketItemService clientBasketItemService;
 
     @Inject
     private ClientBasketMapper clientBasketMapper;
@@ -127,14 +132,28 @@ public class ClientBasketResource {
      * DELETE  /client-baskets/:id : delete the "id" clientBasket.
      *
      * @param id the id of the clientBasketDTO to delete
+     * @param deleteitems delete all subitems for the basket
      * @return the ResponseEntity with status 200 (OK)
      */
     @RequestMapping(value = "/client-baskets/{id}",
         method = RequestMethod.DELETE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @Timed
-    public ResponseEntity<Void> deleteClientBasket(@PathVariable String id) {
+    public ResponseEntity<Void> deleteClientBasket(
+        @PathVariable String id,
+        @RequestParam(name = "deleteitems", required = false, defaultValue = "false") Boolean deleteitems) {
+
         log.debug("REST request to delete ClientBasket : {}", id);
+
+        Boolean orderedOnly = false;
+
+        if(deleteitems){
+            List<ClientBasketItemDTO> items = clientBasketItemService.findByIdClientBasket(id, orderedOnly);
+            for (ClientBasketItemDTO item: items) {
+                clientBasketItemService.delete(item.getId());
+            }
+        }
+
         clientBasketService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert("clientBasket", id.toString())).build();
     }

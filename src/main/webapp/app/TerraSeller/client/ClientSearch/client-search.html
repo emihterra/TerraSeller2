@@ -58,11 +58,17 @@
         <strong>Центр затрат: </strong>{{vm.clientInfo.center}}<br>
         <strong>Примечание: </strong>{{vm.clientInfo.contacttext}}<br><br>
 
-        <button type="button" class="btn btn-success" ui-sref="app.terraSeller.client">
-            <span class="glyphicon glyphicon-list"></span>&nbsp;К списку клиентов
+        <button type="button" class="btn btn-warning" ui-sref="app.terraSeller.client">
+            <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;Отменить
         </button>
         <button type="submit" class="btn btn-primary" ng-click="vm.AddClient()">
             <span class="glyphicon glyphicon-save"></span>&nbsp;Сохранить
+        </button>
+    </div>
+
+    <div class="row" style="margin-top: 50px;margin-left: 15px" ng-show="!vm.clientInfo">
+        <button type="button" class="btn btn-success" ui-sref="app.terraSeller.client">
+            <span class="glyphicon glyphicon-list"></span>&nbsp;К списку клиентов
         </button>
     </div>
 

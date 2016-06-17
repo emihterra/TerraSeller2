@@ -18,6 +18,7 @@
                     return data;
                 }
             },
+            'delete': { method:'DELETE' },
             'save': { method:'POST' },
             'update': { method:'PUT' }
         });

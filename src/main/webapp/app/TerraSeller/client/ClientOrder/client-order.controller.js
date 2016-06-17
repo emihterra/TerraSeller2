@@ -40,6 +40,7 @@
         vm.makeOrder = makeOrder;
         vm.countAnalitics = countAnalitics;
         vm.deleteItem = deleteItem;
+        vm.closeClient = closeClient;
 
         terraSellerOrderService.getDivisions().then(function(response){
             vm.divisionList = response;
@@ -209,12 +210,28 @@
                 });
 
                 terraSellerOrderService.createOrderBody(data).then(function(){
-                    $.smallBox({
+                    angular.forEach(vm.orderItems, function (item) {
+                        item.ordered = false;
+                        ClientBasketItem.update(item);
+                    });
+
+                    vm.orderItems = {};
+                    vm.orderSum = 0;
+
+                    $.SmartMessageBox({
                         title: "Заказ " + bsCode + " создан успешно!",
-                        content: "",
+                        content: "Завершить работу с клиентом?",
                         color: "#0F5933",
                         iconSmall: "fa fa-thumbs-up bounce animated",
-                        timeout: 4000
+                        buttons: '[Отмена][Завершить]'
+                        //timeout: 4000
+                    }, function (ButtonPressed) {
+                        if (ButtonPressed === "Завершить") {
+                            vm.closeClient();
+                        }
+                        if (ButtonPressed === "Отмена") {
+                            $state.go('app.terraSeller.client-basket');
+                        }
                     });
 //                    terraSellerOrderService.getOrderNumber(bsCode).then(function(orderNumberRes){
 //                        orderNumber = orderNumberRes;
@@ -343,6 +360,17 @@
                 }
                 i++;
             });
+        };
+
+        function closeClient(){
+            console.log("closeClient");
+            ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
+                angular.forEach(result, function(item) {
+                    ClientBasket.delete({id: item.id, deleteitems: true});
+                });
+            });
+
+            $state.go('app.terraSeller.client');
         };
 
     }

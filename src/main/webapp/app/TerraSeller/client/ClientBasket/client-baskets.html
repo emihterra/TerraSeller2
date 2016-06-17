@@ -11,7 +11,7 @@
                     <span class="glyphicon glyphicon-plus"></span>
                     Создать корзину
                 </button>
-                <button class="btn btn-danger" data-toggle="modal" data-target="#delBasket" >
+                <button class="btn btn-danger" data-toggle="modal" data-target="#delBasket" ng-show="vm.clientBaskets&&(vm.clientBaskets.length > 0)">
                     <span class="glyphicon glyphicon-minus"></span>
                     Удалить
                 </button>
