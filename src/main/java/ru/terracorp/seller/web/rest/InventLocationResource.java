@@ -71,7 +71,7 @@ public class InventLocationResource {
             InventLocation result = inventLocationRepository.save(inventLocation);
         }
 
-        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
+        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.ASC, "priority"));
         return new ResponseEntity<Object>(importedInventLocations, HttpStatus.OK);
     }
 
@@ -93,7 +93,7 @@ public class InventLocationResource {
             InventLocation result = inventLocationRepository.save(inventLocation);
         }
 
-        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
+        List<InventLocation> importedInventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.ASC, "priority"));
         return new ResponseEntity<Object>(importedInventLocations, HttpStatus.OK);
     }
 
@@ -132,7 +132,7 @@ public class InventLocationResource {
     @Timed
     public List<InventLocation> getAllInventLocations() {
         log.debug("REST request to get all InventLocations");
-        List<InventLocation> inventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.DESC, "priority"));
+        List<InventLocation> inventLocations = inventLocationRepository.findAll(new Sort(Sort.Direction.ASC, "priority"));
         return inventLocations;
     }
 

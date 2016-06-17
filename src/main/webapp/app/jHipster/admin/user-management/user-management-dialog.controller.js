@@ -10,7 +10,7 @@
     function UserManagementDialogController ($stateParams, $uibModalInstance, entity, User, JhiLanguageService) {
         var vm = this;
 
-        vm.authorities = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_PARENT', 'ROLE_PUPIL'];
+        vm.authorities = ['ROLE_USER', 'ROLE_ADMIN', 'ROLE_SUPER_MANAGER'];
         vm.clear = clear;
         vm.languages = null;
         vm.save = save;

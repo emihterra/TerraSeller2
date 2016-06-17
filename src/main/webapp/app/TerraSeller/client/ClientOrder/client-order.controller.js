@@ -265,11 +265,11 @@
         function getStockAndAnaliticsByQuantity(orderItem){
             var stocksMore = [];
             var stocksLess = [];
-            var res = {stock: "", analitics: "", delta: -1, priority: 0};
+            var res = {stock: "", analitics: "", delta: -1, priority: 1000000};
             var priority = 0;
 
             function CompareRes(stockName, stockDelta, stockQty, stockPriority, stockAnalitics) {
-                if((res.delta == -1)||(res.delta > stockDelta)||((res.delta == stockQty)&&(res.priority < stockPriority))){
+                if((res.delta == -1)||(res.delta > stockDelta)||((res.delta == stockQty)&&(res.priority > stockPriority))){
                     res.stock = stockName;
                     res.analitics = stockAnalitics;
                     res.delta = stockDelta;

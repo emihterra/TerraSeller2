@@ -71,10 +71,6 @@
                         <a data-ui-sref="password"><i class="glyphicon glyphicon-lock"></i>
                             Пароль</a>
                     </li>
-                    <li data-ui-sref-active="active">
-                        <a data-ui-sref="app.terraSeller.invent-location"><i class="fa fa-lg fa-fw fa-truck"></i>
-                            Список складов</a>
-                    </li>
                     <!--<li data-ui-sref-active="active">
                         <a data-ui-sref="sessions"><i class="glyphicon glyphicon-cloud"></i>
                             Сессии</a>
@@ -114,6 +110,11 @@
                             Заказ</a>
                     </li>
                 </ul>
+            </li>
+
+            <li data-ui-sref-active="active" ng-show="vm.isAuthenticated()" has-authority="ROLE_SUPER_MANAGER">
+                <a data-ui-sref="app.terraSeller.invent-location"><i class="fa fa-lg fa-fw fa-truck"></i>
+                    Список складов</a>
             </li>
 
         </ul>
