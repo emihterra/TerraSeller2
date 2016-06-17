@@ -101,6 +101,10 @@
 
                     ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
                         vm.clientBaskets = result;
+                        vm.clientBaskets.push({
+                            id: "",
+                            name: "Новая корзина"
+                        });
                     });
                 }
             });
@@ -227,6 +231,40 @@
         };
 
         function sendToBasket (basket) {
+
+            if(!basket.id){
+                $.SmartMessageBox({
+                    title: "Новая корзина",
+                    content: "Введите имя корзины:",
+                    input: "text",
+                    inputValue: "",
+                    placeholder: "имя корзины",
+                    buttons: '[Сохранить][Отмена]'
+                    //timeout: 4000
+                }, function (ButtonPressed, Value) {
+                    if (ButtonPressed === "Сохранить") {
+                        var newBasket = {
+                            id: null,
+                            name: Value,
+                            client: vm.clientCode,
+                            emplcode: vm.employeeID,
+                            deleted: false,
+                            idClientRoom: "",
+                            info: ""
+                        };
+                        ClientBasket.save(newBasket, function(result){
+                            sendToBasket(result);
+                            return;
+                        }, function(){
+                            return;
+                        });
+                    }
+                    if (ButtonPressed === "Отмена") {
+                        return;
+                    }
+                });
+                return;
+            }
 
             var basketItem = {};
 
