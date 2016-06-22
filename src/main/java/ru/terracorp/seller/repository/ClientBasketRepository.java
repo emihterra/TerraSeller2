@@ -16,5 +16,6 @@ public interface ClientBasketRepository extends MongoRepository<ClientBasket,Str
      *  @return the list of entities
      */
     List<ClientBasket> findByClientAndDeleted(String client, Boolean deleted);
+    List<ClientBasket> findByClientAndEmplcodeAndDeleted(String client, String emplcode, Boolean deleted);
 
 }

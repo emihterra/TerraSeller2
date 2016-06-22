@@ -41,7 +41,7 @@
                     vm.clientsList = angular.fromJson(vm.emplSettings.clients);
                 };
 
-                if ((vm.emplSettings.lastClientCode)&&(!vm.emplSettings.useDefaultClient)){
+                if ((vm.emplSettings.lastClientCode)/*&&(!vm.emplSettings.useDefaultClient)*/){
                     LoadClientInfo(vm.emplSettings.lastClientCode);
                 }
             });

@@ -59,7 +59,7 @@ appConfig.skins = [
 
 
 appConfig.sound_path = "sound/";
-appConfig.sound_on = true;
+appConfig.sound_on = false;
 
 
 /*
@@ -69,7 +69,7 @@ appConfig.sound_on = true;
 */
 
 
-appConfig.debugState = true;
+appConfig.debugState = false;
 appConfig.debugStyle = 'font-weight: bold; color: #00f;';
 appConfig.debugStyle_green = 'font-weight: bold; font-style:italic; color: #46C246;';
 appConfig.debugStyle_red = 'font-weight: bold; color: #ed1c24;';

@@ -51,7 +51,7 @@
         });
 
         function loadOrderItems() {
-            ClientBasketItem.query({idbasket: "", orderedOnly: "true"}, function(result) {
+            ClientBasketItem.query({idbasket: "", client: vm.clientCode, emplcode: vm.emplcode, orderedOnly: "true"}, function(result) {
                 vm.orderItems = result;
 
                 angular.forEach(vm.orderItems, function(item){
@@ -364,7 +364,7 @@
 
         function closeClient(){
             console.log("closeClient");
-            ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
+            ClientBasket.query({client: vm.clientCode, emplcode: vm.emplcode, deleted: false}, function(result) {
                 angular.forEach(result, function(item) {
                     ClientBasket.delete({id: item.id, deleteitems: true});
                 });

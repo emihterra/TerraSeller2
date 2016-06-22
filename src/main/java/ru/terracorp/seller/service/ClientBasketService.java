@@ -68,6 +68,19 @@ public class ClientBasketService {
     }
 
     /**
+     *  Get all the ClientBasket by client and employee.
+     *
+     *  @return the list of entities
+     */
+    public List<ClientBasketDTO> findByClientAndEmplcodeAndDeleted(String client, String emplcode, Boolean deleted) {
+        log.debug("Request to get all ClientBaskets");
+        List<ClientBasketDTO> result = clientBasketRepository.findByClientAndEmplcodeAndDeleted(client, emplcode, deleted).stream()
+            .map(clientBasketMapper::clientBasketToClientBasketDTO)
+            .collect(Collectors.toCollection(LinkedList::new));
+        return result;
+    }
+
+    /**
      *  Get one clientBasket by id.
      *
      *  @param id the id of the entity

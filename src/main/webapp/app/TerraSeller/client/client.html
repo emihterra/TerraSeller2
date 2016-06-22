@@ -22,15 +22,15 @@
         Загрузка данных, подождите...
     </p>
 
-    <div class="row" ng-show="vm.clientInfo.name" style="margin-top: 50px;margin-left: 15px">
+    <div class="row" ng-show="vm.clientsList.list" style="margin-top: 50px;margin-left: 15px">
         <div class="row" style="padding-left: 15px">
             <label class="control-label">Клиент</label><br>
-            <div style="float: left">
+            <div style="float: left;  padding-right: 10px; padding-bottom: 10px">
                 <select id="clients" name="clients" class="form-control" ng-model="vm.emplSettings.lastClientCode"  ng-change="vm.selectClient()" style="max-width: 300px">
                     <option ng-repeat="client in vm.clientsList.list" value="{{client.code}}">{{client.name}}</option>
                 </select>
             </div>
-            <div style="float: left; padding-left: 10px">
+            <div style="float: left">
                 <button class="btn btn-warning" ng-click="vm.deleteClient()">
                     <span class="glyphicon glyphicon-minus-sign"></span>
                     Удалить

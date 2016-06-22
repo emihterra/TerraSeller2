@@ -97,6 +97,7 @@ public class ClientBasketResource {
     @Transactional(readOnly = true)
     public List<ClientBasketDTO> getAllClientBaskets(
         @RequestParam(name = "client", required = false, defaultValue = "") String client,
+        @RequestParam(name = "emplcode", required = false, defaultValue = "") String emplcode,
         @RequestParam(name = "deleted", required = false, defaultValue = "false") Boolean deleted
     ) {
         if(client.isEmpty()) {
@@ -104,7 +105,11 @@ public class ClientBasketResource {
             return clientBasketService.findAll();
         } else {
             log.debug("REST request to get all ClientBaskets by client");
-            return clientBasketService.findByClientAndDeleted(client, deleted);
+            if(emplcode.isEmpty()) {
+                return clientBasketService.findByClientAndDeleted(client, deleted);
+            } else {
+                return clientBasketService.findByClientAndEmplcodeAndDeleted(client, emplcode, deleted);
+            }
         }
     }
 

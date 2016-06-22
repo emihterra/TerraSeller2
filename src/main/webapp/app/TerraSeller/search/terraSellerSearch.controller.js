@@ -99,7 +99,7 @@
                     vm.employeeID = settings.emplcode;
                     vm.employeeDimension = settings.dimension;
 
-                    ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
+                    ClientBasket.query({client: vm.clientCode, emplcode: vm.employeeID, deleted: false}, function(result) {
                         vm.clientBaskets = result;
                         vm.clientBaskets.push({
                             id: "",

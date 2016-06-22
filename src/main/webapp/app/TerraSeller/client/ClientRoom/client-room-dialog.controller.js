@@ -65,6 +65,7 @@
         var onSaveSuccess = function (result) {
             vm.error = null;
             vm.success = 'OK';
+            $state.go('app.terraSeller.client-room');
         };
 
         var onSaveError = function () {

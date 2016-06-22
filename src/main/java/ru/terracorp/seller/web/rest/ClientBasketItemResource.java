@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.terracorp.seller.service.ClientBasketItemService;
+import ru.terracorp.seller.service.ClientBasketService;
+import ru.terracorp.seller.web.rest.dto.ClientBasketDTO;
 import ru.terracorp.seller.web.rest.dto.ClientBasketItemDTO;
 import ru.terracorp.seller.web.rest.mapper.ClientBasketItemMapper;
 import ru.terracorp.seller.web.rest.util.HeaderUtil;
@@ -30,6 +32,9 @@ public class ClientBasketItemResource {
 
     @Inject
     private ClientBasketItemService clientBasketItemService;
+
+    @Inject
+    private ClientBasketService clientBasketService;
 
     @Inject
     private ClientBasketItemMapper clientBasketItemMapper;
@@ -92,13 +97,51 @@ public class ClientBasketItemResource {
     @Transactional(readOnly = true)
     public List<ClientBasketItemDTO> getAllClientBasketItems(
         @RequestParam(name = "idbasket", required = false, defaultValue = "") String idbasket,
-        @RequestParam(name = "orderedOnly", required = false, defaultValue = "false") Boolean orderedOnly) {
+        @RequestParam(name = "orderedOnly", required = false, defaultValue = "false") Boolean orderedOnly,
+        @RequestParam(name = "client", required = false, defaultValue = "") String client,
+        @RequestParam(name = "emplcode", required = false, defaultValue = "") String emplcode
+        ) {
 
         if (idbasket.isEmpty()) {
 
             if(orderedOnly) {
                 log.debug("REST request to get all ClientBasketItems");
-                return clientBasketItemService.findByOrdered(true);
+
+                if(!client.isEmpty()||!emplcode.isEmpty()){
+
+                    List<ClientBasketItemDTO> basketItems = null;
+                    List<ClientBasketItemDTO> tmpBasketItems = null;
+                    List<ClientBasketDTO> baskets = null;
+                    Boolean deleted = false;
+
+                    if(!client.isEmpty()&emplcode.isEmpty()){
+                        baskets = clientBasketService.findByClientAndDeleted(client, deleted);
+                    } else if(!client.isEmpty()&!emplcode.isEmpty()){
+                        baskets = clientBasketService.findByClientAndEmplcodeAndDeleted(client, emplcode, deleted);
+                    }
+
+                    if(baskets != null){
+                        for (ClientBasketDTO basket: baskets) {
+
+                            if(basketItems == null){
+                                basketItems = clientBasketItemService.findByIdClientBasket(basket.getId(), orderedOnly);
+                            } else {
+                                tmpBasketItems = clientBasketItemService.findByIdClientBasket(basket.getId(), orderedOnly);
+                                for (ClientBasketItemDTO basketItem: tmpBasketItems) {
+                                    basketItems.add(basketItem);
+                                }
+                            }
+                        }
+                    } else {
+                        String emptyID = "";
+                        basketItems = clientBasketItemService.findByIdClientBasket(emptyID, orderedOnly);
+                    }
+
+                    return basketItems;
+
+                } else {
+                    return clientBasketItemService.findByOrdered(true);
+                }
             } else {
                 log.debug("REST request to get all ClientBasketItems");
                 return clientBasketItemService.findAll();

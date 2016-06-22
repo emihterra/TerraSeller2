@@ -6,12 +6,12 @@
         .controller('ClientBasketController', ClientBasketController);
 
     ClientBasketController.$inject =
-        ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
-            'terraSellerStockService', 'ClientRoom', 'terraSellerOrderService'];
+        ['$q', '$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
+            'terraSellerStockService', 'ClientRoom', 'terraSellerOrderService', 'ItemTypeService'];
 
     function ClientBasketController (
-        $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
-        terraSellerStockService, ClientRoom, terraSellerOrderService) {
+        $q, $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
+        terraSellerStockService, ClientRoom, terraSellerOrderService, ItemTypeService) {
 
         var vm = this;
         vm.clientBaskets = [];
@@ -47,7 +47,7 @@
         vm.deleteItem = deleteItem;
 
         vm.loadByClient = function() {
-            ClientBasket.query({client: vm.clientCode, deleted: false}, function(result) {
+            ClientBasket.query({client: vm.clientCode, emplcode: vm.emplcode, deleted: false}, function(result) {
                 vm.clientBaskets = result;
 
                 if((vm.clientBaskets)&&(vm.clientBaskets.length > 0)) {
@@ -109,6 +109,15 @@
                 angular.forEach(vm.basketItems, function(item){
                    if(item.info) {
                        item.infoJSON = angular.fromJson(item.info);
+                   }
+                   if(!item.useType){
+                       ItemTypeService.get({id: 0, code: item.code}, function(responseItem){
+                           if(responseItem) {
+                               item.useType = responseItem.useType;
+                           }
+                       }, function(error){
+                           //
+                       });
                    }
                 });
 
@@ -407,6 +416,7 @@
 
         function applyUseType() {
             ClientBasketItem.update(vm.selectedItemType);
+            ItemTypeService.update({id: null, code: vm.selectedItemType.code, useType: vm.selectedItemType.useType});
         };
 
         function cancelDelBasket() {
@@ -416,7 +426,7 @@
         };
 
         function delBasket() {
-            var items = {};
+            var items = [];
 
             angular.forEach(vm.basketItems, function(item) {
                 items.push({

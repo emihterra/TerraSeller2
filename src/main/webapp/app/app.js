@@ -69,8 +69,10 @@ angular.module('app', [
 
             // On response failure
             responseError: function (rejection) {
-                // show notification
-                notifyError(rejection);
+                if(rejection.status != 404) {
+                    // show notification
+                    notifyError(rejection);
+                }
                 // Return the promise rejection.
                 return $q.reject(rejection);
             }
