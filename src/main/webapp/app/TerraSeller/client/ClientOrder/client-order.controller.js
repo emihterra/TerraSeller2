@@ -10,11 +10,11 @@
         .controller('ClientOrderController', ClientOrderController);
 
     ClientOrderController.$inject =
-        ['$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
+        ['$scope', '$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
             'terraSellerStockService', 'terraSellerSearchService', 'terraSellerOrderService', 'InventLocation'];
 
     function ClientOrderController (
-        $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
+        $scope, $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
         terraSellerStockService, terraSellerSearchService, terraSellerOrderService, InventLocation) {
 
         var vm = this;
@@ -29,6 +29,7 @@
         vm.orderSum = 0;
         vm.divisionList = {};
         vm.locations = [];
+        vm.selectedQtyItem = {};
 
         vm.show2rowName = show2rowName;
         vm.clickInfo = clickInfo;
@@ -58,6 +59,7 @@
                     if(item.info) {
                         item.infoJSON = angular.fromJson(item.info);
                     }
+                    vm.selectedQtyItem[item.id] = item.qty;
                 });
 
                 vm.countOrderSum();
@@ -136,6 +138,19 @@
             ClientBasketItem.update(newItem);
         };
 
+        $scope.$watch("vm.selectedQtyItem", function(){
+            if(!vm.selectedQtyItem){
+                return;
+            }
+
+            angular.forEach(vm.orderItems, function (item) {
+                if(vm.selectedQtyItem[item.id]&&(vm.selectedQtyItem[item.id] != item.qty)){
+                    item.qty = vm.selectedQtyItem[item.id];
+                    checkItemQty(item)
+                }
+            });
+        }, true);
+
         function getTypeStr(item){
             return terraSellerOrderService.getTypeStr(item);
         };
@@ -148,10 +163,11 @@
                 if(cartItem.unit == 'кв.м.') {
 
                     terraSellerSearchService.recountQty(cartItem.code, cartItem.qty).then(function(newQty) {
-                        cartItem.qty = newQty;
+                        //cartItem.qty = newQty;
                         cartItem.recounted = true;
+                        vm.selectedQtyItem[cartItem.id] = newQty;
 
-                        ClientBasketItem.update(cartItem);
+                        //ClientBasketItem.update(cartItem);
                     });
                 }
             });
@@ -163,10 +179,11 @@
 
                 if(cartItem.unit == 'кв.м.') {
                     terraSellerSearchService.recountMeter2Box(cartItem.code, cartItem.qty).then(function(newQty) {
-                        cartItem.qty = newQty;
+                        //cartItem.qty = newQty;
                         cartItem.recounted = true;
+                        vm.selectedQtyItem[cartItem.id] = newQty;
 
-                        ClientBasketItem.update(cartItem);
+                        //ClientBasketItem.update(cartItem);
                     });
                 }
                 /*else if(cartItem.unit == 'шт.') {
@@ -332,7 +349,7 @@
 
                     orderItem.stock = res.stock;
                     orderItem.combo = res.analitics;
-                    orderItem.stockQty = res.stockQty;
+                    orderItem.stockQty = res.stockQty.toFixed(2);
                     ClientBasketItem.update(orderItem);
                 }
             });

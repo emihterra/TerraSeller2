@@ -6,11 +6,11 @@
         .controller('ClientBasketController', ClientBasketController);
 
     ClientBasketController.$inject =
-        ['$q', '$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
+        ['$q', '$scope', '$state', 'ClientBasket', 'Principal', 'terraSellerSettingsService', 'ClientBasketItem',
             'terraSellerStockService', 'ClientRoom', 'terraSellerOrderService', 'ItemTypeService'];
 
     function ClientBasketController (
-        $q, $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
+        $q, $scope, $state, ClientBasket, Principal, terraSellerSettingsService, ClientBasketItem,
         terraSellerStockService, ClientRoom, terraSellerOrderService, ItemTypeService) {
 
         var vm = this;
@@ -28,6 +28,7 @@
         vm.basketSum = 0;
         vm.selectedItemType = {};
         vm.calcSum = 0;
+        vm.selectedQtyItem = {};
 
         vm.addNewBasket = addNewBasket;
         vm.isBasketActive = isBasketActive;
@@ -110,6 +111,9 @@
                    if(item.info) {
                        item.infoJSON = angular.fromJson(item.info);
                    }
+
+                    vm.selectedQtyItem[item.id] = item.qty;
+
                    if(!item.useType){
                        ItemTypeService.get({id: 0, code: item.code}, function(responseItem){
                            if(responseItem) {
@@ -169,8 +173,12 @@
         function checkItemQty(item) {
             var qty = "";
 
-            qty = item.qty.toString();
-            item.qty = qty.replace(",", ".");
+            if(item.qty) {
+                qty = item.qty.toString();
+                item.qty = qty.replace(",", ".");
+            } else {
+                item.qty = 0;
+            }
 
             var qtyN = parseFloat(item.qty);
 
@@ -186,6 +194,19 @@
 
             ClientBasketItem.update(newItem);
         };
+
+        $scope.$watch("vm.selectedQtyItem", function(){
+           if(!vm.selectedQtyItem){
+               return;
+           }
+
+            angular.forEach(vm.basketItems, function (item) {
+                if(vm.selectedQtyItem[item.id]&&(vm.selectedQtyItem[item.id] != item.qty)){
+                    item.qty = vm.selectedQtyItem[item.id];
+                    checkItemQty(item)
+                }
+            });
+        }, true);
 
         function getTypeStr(item){
             return terraSellerOrderService.getTypeStr(item);
@@ -426,10 +447,10 @@
         };
 
         function delBasket() {
-            var items = [];
+            vm.clientBasket.infoJSON.items = [];
 
             angular.forEach(vm.basketItems, function(item) {
-                items.push({
+                vm.clientBasket.infoJSON.items.push({
                     name: item.name,
                     qty: item.qty
                 });
@@ -437,10 +458,11 @@
             });
 
             vm.clientBasket.deleted = true;
-            vm.clientBasket.info = JSON.stringify(items);
+            vm.clientBasket.info = JSON.stringify(vm.clientBasket.infoJSON);
             ClientBasket.update(vm.clientBasket, function(){
                 vm.clientBasket = {};
                 vm.basketItems = {};
+                vm.selectedQtyItem = {};
                 vm.basketSum = 0;
                 vm.selectedItemType = {};
                 vm.calcSum = 0;
@@ -455,8 +477,10 @@
         function applyForRoom(){
             angular.forEach(vm.basketItems, function(item) {
                 if(item.qtycalc > 0) {
-                    item.qty = item.qtycalc;
-                    ClientBasketItem.update(item);
+                    //item.qty = item.qtycalc;
+                    vm.selectedQtyItem[item.id] = item.qtycalc;
+
+                    //ClientBasketItem.update(item);
                 }
             });
             vm.countBasketSum();

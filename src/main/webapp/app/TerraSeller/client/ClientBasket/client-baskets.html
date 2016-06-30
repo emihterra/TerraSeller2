@@ -59,12 +59,11 @@
                         <tbody>
                         <tr ng-repeat="item in vm.basketItems">
                             <td>
-                                <input type="text"
+                                <input type="number"
+                                       ng-model="vm.selectedQtyItem[item.id]"
                                        min="0"
-                                       ng-model="item.qty"
-                                       ng-keyup="item.recounted = false;vm.checkItemQty(item);"
-                                       style="width: 80px; height: 30px;text-align: center"
-                                       onClick="this.select();"/><br>
+                                       onClick="this.select()"
+                                       style="width: 80px; height: 30px;text-align: center" /><br>
                                 <div class="onoffswitch-container">
                                     <span class="onoffswitch">
                                         <input type="checkbox" class="onoffswitch-checkbox" id="inline_{{item.id}}" ng-model="item.ordered" ng-click="vm.itemOrderedChange(item)">

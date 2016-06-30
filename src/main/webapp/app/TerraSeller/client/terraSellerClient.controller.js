@@ -54,24 +54,37 @@
             terraSellerSettingsService.save(vm.emplSettings);
         }
 
-        function deleteClient(){
-            var i = 0;
-            vm.clientStatistic = '';        // статистика по клиенту
-            vm.clientInfo = {};             // информация по клиенту
-            if(vm.clientsList&&vm.clientsList.list){
-                angular.forEach(vm.clientsList.list, function(item){
-                    if(item.code==vm.emplSettings.lastClientCode){
-                        vm.clientsList.list.splice(i);
+        function DelClientFromList(delCode){
+            if(vm.clientsList&&vm.clientsList.list) {
+                var i = 0;
+                angular.forEach(vm.clientsList.list, function (item) {
+                    if (item.code === delCode) {
+                        vm.clientsList.list.splice(i, 1);
+                        return;
                     };
                     i++;
                 });
+            }
+        }
+
+        function deleteClient(){
+            vm.clientStatistic = '';        // статистика по клиенту
+            vm.clientInfo = {};             // информация по клиенту
+            if(vm.clientsList&&vm.clientsList.list){
+                DelClientFromList(vm.emplSettings.lastClientCode);
+
                 vm.emplSettings.lastClientCode = "";
                 if(vm.clientsList&&vm.clientsList.list&&(vm.clientsList.list.length > 0)){
                     vm.emplSettings.lastClientCode = vm.clientsList.list[0].code;
-                    vm.emplSettings.clients = angular.toJson(vm.clientsList);
-                    terraSellerSettingsService.save(vm.emplSettings);
-                    LoadClientInfo(vm.emplSettings.lastClientCode);
                 }
+
+                vm.emplSettings.clients = angular.toJson(vm.clientsList);
+
+                terraSellerSettingsService.save(vm.emplSettings, function(){
+                    if(vm.emplSettings.lastClientCode) {
+                        LoadClientInfo(vm.emplSettings.lastClientCode);
+                    }
+                });
             };
         };
 

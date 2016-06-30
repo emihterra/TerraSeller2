@@ -30,9 +30,28 @@
         };
     }
 
+
     ifLoading.$inject = ['$http'];
 
     angular
         .module('app.terraSeller')
         .directive('ifLoading', ifLoading);
+
+    angular
+      .module('app.terraSeller')
+        .directive('ngFloat', function() {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function(scope, $el, attrs, ngModel) {
+                ngModel.$parsers.push(function(value) {
+                    return parseFloat(value, 10);
+                });
+
+                ngModel.$formatters.push(function(value) {
+                    return value.toString();
+                });
+            }
+        };
+    });
 }(angular));

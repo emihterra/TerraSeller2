@@ -1,0 +1,38 @@
+
+<div>
+    <h2><span translate="schoolApp.history.detail.title">History</span> {{vm.history.id}}</h2>
+    <hr>
+    <dl class="dl-horizontal">
+        <dt><span translate="schoolApp.history.client">Client</dt></dt>
+        <dd>
+            <span>{{vm.history.client}}<span>
+        </dd>
+        <hr>
+        <dt><span translate="schoolApp.history.emplcode">Emplcode</dt></dt>
+        <dd>
+            <span>{{vm.history.emplcode}}<span>
+        </dd>
+        <hr>
+        <dt><span translate="schoolApp.history.type">Type</dt></dt>
+        <dd>
+            <span>{{vm.history.type}}<span>
+        </dd>
+        <hr>
+        <dt><span translate="schoolApp.history.info">Info</dt></dt>
+        <dd>
+            <span>{{vm.history.info}}<span>
+        </dd>
+        <hr>
+        <dt><span translate="schoolApp.history.items">Items</dt></dt>
+        <dd>
+            <span>{{vm.history.items}}<span>
+        </dd>
+        <hr>
+    </dl>
+
+    <button type="submit"
+            onclick="window.history.back()"
+            class="btn btn-info">
+        <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;<span translate="entity.action.back"> Back</span>
+    </button>
+</div>
